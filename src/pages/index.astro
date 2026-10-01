@@ -1,0 +1,64 @@
+---
+import { getCollection } from 'astro:content'
+import BaseLayout from '~/layouts/BaseLayout.astro'
+import StudioShell from '~/components/StudioShell.astro'
+import SocialLinks from '~/components/SocialLinks.astro'
+import SectionHeader from '~/components/SectionHeader.astro'
+import CareerPath from '~/components/CareerPath'
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf())
+const featuredPosts = posts.filter((post) => post.data.featured).slice(0, 3)
+const formatDate = (date: Date) => date.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })
+---
+
+<BaseLayout>
+  <StudioShell active="/" filename="README.md">
+    <div class="home">
+      <section class="hero">
+        <p class="prompt">$ hello, world</p>
+        <h1>I’m Bruce Chau<span class="cursor" aria-hidden="true"></span></h1>
+        <p class="hero__lede">Developer, builder, and lifelong learner.<br />I write about software, health, and unfinished ideas.</p>
+        <SocialLinks />
+        <div class="now-line">
+          <strong>NOW</strong>
+          <span>Studying at PTIT · Building with Weaverse</span>
+          <time datetime="2026-09">SEP 2026</time>
+        </div>
+      </section>
+
+      <section class="home-section">
+        <SectionHeader title="FEATURED WRITING" href="/blogs" />
+        <div class="post-list">
+          {featuredPosts.map((post) => (
+            <a class="post-row" href={`/blog/${post.id}`}>
+              <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
+              <strong>{post.data.title}</strong>
+              <span>{post.data.category}</span>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section class="home-section">
+        <SectionHeader title="SELECTED PROJECTS" href="/projects" />
+        <div class="project-list">
+          <a class="project-item" href="/projects">
+            <span>01 / PERSONAL</span>
+            <h3>brucechau.dev</h3>
+            <p>A quiet corner of the internet for notes, experiments, and things worth remembering.</p>
+            <small>Astro · React · MDX</small>
+          </a>
+          <a class="project-item" href="/projects">
+            <span>02 / IN PROGRESS</span>
+            <h3>Small useful tools</h3>
+            <p>Exploring products that remove friction from learning, building, and everyday work.</p>
+            <small>TypeScript · Product craft</small>
+          </a>
+        </div>
+      </section>
+
+      <CareerPath client:visible />
+    </div>
+  </StudioShell>
+</BaseLayout>

@@ -1,0 +1,77 @@
+---
+import '~/styles/global.css'
+import { SITE } from '~/lib/site'
+
+interface Props {
+  title?: string
+  description?: string
+  image?: string
+  type?: 'website' | 'article'
+}
+
+const {
+  title = SITE.title,
+  description = SITE.description,
+  image = '/social-card.svg',
+  type = 'website',
+} = Astro.props
+const canonical = new URL(Astro.url.pathname, SITE.url)
+const socialImage = new URL(image, SITE.url)
+const umamiId = import.meta.env.PUBLIC_UMAMI_WEBSITE_ID
+const umamiScript = import.meta.env.PUBLIC_UMAMI_SCRIPT_URL ?? 'https://analytics.umami.is/script.js'
+---
+
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#111214" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" type="application/rss+xml" title={`${SITE.name} RSS`} href="/feed.xml" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={socialImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <title>{title}</title>
+    <script is:inline>
+      (() => {
+        const saved = localStorage.getItem('theme') || 'system'
+        const resolved = saved === 'system'
+          ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+          : saved
+        document.documentElement.dataset.theme = resolved
+        document.documentElement.dataset.themePreference = saved
+      })()
+    </script>
+    {umamiId && <script async src={umamiScript} data-website-id={umamiId}></script>}
+  </head>
+  <body>
+    <slot />
+    <script>
+      const applyTheme = (preference: string) => {
+        const resolved = preference === 'system'
+          ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+          : preference
+        document.documentElement.dataset.theme = resolved
+        document.documentElement.dataset.themePreference = preference
+        localStorage.setItem('theme', preference)
+      }
+
+      document.addEventListener('click', (event) => {
+        const target = event.target as HTMLElement
+        const themeButton = target.closest<HTMLElement>('[data-theme-value]')
+        if (themeButton?.dataset.themeValue) applyTheme(themeButton.dataset.themeValue)
+      })
+
+      matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+        if ((localStorage.getItem('theme') || 'system') === 'system') applyTheme('system')
+      })
+    </script>
+  </body>
+</html>

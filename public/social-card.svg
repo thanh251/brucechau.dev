@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Bruce Chau</title><desc id="desc">Developer, builder, and lifelong learner.</desc>
+  <rect width="1200" height="630" fill="#0a0b0d"/><rect x="70" y="60" width="1060" height="510" rx="24" fill="#111214" stroke="#2a3038" stroke-width="2"/>
+  <circle cx="112" cy="102" r="8" fill="#ff5f57"/><circle cx="138" cy="102" r="8" fill="#febc2e"/><circle cx="164" cy="102" r="8" fill="#28c840"/>
+  <text x="118" y="225" fill="#55df72" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24">$ hello, world</text>
+  <text x="118" y="330" fill="#f3f4f6" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="74" font-weight="700">I’m Bruce Chau_</text>
+  <text x="118" y="398" fill="#98a0ad" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="31">Developer, builder, and lifelong learner.</text>
+  <text x="118" y="505" fill="#667080" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20">ASTRO · REACT ISLANDS · MDX · CLOUDFLARE PAGES</text>
+</svg>

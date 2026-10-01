@@ -1,0 +1,13 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro'
+import StudioShell from '~/components/StudioShell.astro'
+import ProsePage from '~/components/ProsePage.astro'
+---
+
+<BaseLayout title="404 — File not found">
+  <StudioShell filename="404.md">
+    <ProsePage eyebrow="error 404" title="File not found" description="This path does not exist, or the note moved somewhere else.">
+      <p><a href="/">← Return to README.md</a></p>
+    </ProsePage>
+  </StudioShell>
+</BaseLayout>

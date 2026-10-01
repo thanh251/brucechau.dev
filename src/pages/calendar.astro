@@ -1,0 +1,23 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro'
+import StudioShell from '~/components/StudioShell.astro'
+import ProsePage from '~/components/ProsePage.astro'
+
+const bookingUrl = import.meta.env.PUBLIC_GOOGLE_CALENDAR_BOOKING_URL
+---
+
+<BaseLayout title="Calendar — Bruce Chau">
+  <StudioShell active="/calendar" filename="calendar.md">
+    <ProsePage eyebrow="office hours" title="Let’s talk" description="Choose a time that works for you. Google Calendar handles availability and timezone conversion.">
+      <div class="booking-card">
+        <h2>Book a call</h2>
+        <p>For product ideas, engineering questions, or simply comparing notes.</p>
+        {bookingUrl ? (
+          <a href={bookingUrl} target="_blank" rel="noreferrer">Choose a time →</a>
+        ) : (
+          <p>Set <code>PUBLIC_GOOGLE_CALENDAR_BOOKING_URL</code> to publish your Google Calendar appointment schedule.</p>
+        )}
+      </div>
+    </ProsePage>
+  </StudioShell>
+</BaseLayout>

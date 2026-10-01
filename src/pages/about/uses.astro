@@ -1,0 +1,18 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro'
+import StudioShell from '~/components/StudioShell.astro'
+import ProsePage from '~/components/ProsePage.astro'
+---
+
+<BaseLayout title="Uses — Bruce Chau">
+  <StudioShell active="/about/uses" filename="about/uses.md">
+    <ProsePage eyebrow="essentials" title="Things I use" description="Hardware, software, drinks, and platforms that make up my working environment.">
+      <div class="collection-grid">
+        <article class="content-card"><h3>Desk</h3><p>Mac, a comfortable keyboard, headphones, and as little visual noise as possible.</p></article>
+        <article class="content-card"><h3>Code</h3><p>cmux, Codex, GitHub, Bun, Astro, TypeScript, React, and Cloudflare.</p></article>
+        <article class="content-card"><h3>Notes</h3><p>Markdown files close to the work, plus a small paper notebook.</p></article>
+        <article class="content-card"><h3>Drinks</h3><p>Water first. Coffee when a slow morning needs a small ceremony.</p></article>
+      </div>
+    </ProsePage>
+  </StudioShell>
+</BaseLayout>

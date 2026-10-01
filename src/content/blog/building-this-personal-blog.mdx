@@ -1,0 +1,32 @@
+---
+title: Building a personal blog that feels like home
+description: Why this site uses Astro, small React islands, MDX, Bun, and a deliberately quiet interface.
+publishedAt: 2026-09-28
+category: tech
+tags: [astro, react, mdx, cloudflare]
+featured: true
+---
+
+The goal was not to build another content feed. I wanted a small place on the web that felt familiar: part notebook, part file browser, and part workshop.
+
+## Static by default
+
+Astro renders each route to HTML at build time. That keeps the reading experience fast and means Cloudflare Pages can serve the site from its global edge without a long-running application server.
+
+React still has a role, but only where state adds something meaningful. The career timeline is an island: it becomes interactive in the browser while the rest of the page remains plain HTML and CSS.
+
+## Content lives close to the code
+
+Posts are MDX files in `src/content/blog`. Frontmatter holds the title, date, category, and tags; the body stays comfortable to write and version with Git.
+
+```md
+---
+title: A new note
+publishedAt: 2026-09-28
+category: tech
+---
+```
+
+## A deploy is a saved chapter
+
+Pushing to the main branch can trigger a Cloudflare Pages build. Every published version is tied to a commit, previewable before merge, and easy to recover later.

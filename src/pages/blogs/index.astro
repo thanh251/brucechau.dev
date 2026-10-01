@@ -1,0 +1,21 @@
+---
+import { getCollection } from 'astro:content'
+import BaseLayout from '~/layouts/BaseLayout.astro'
+import StudioShell from '~/components/StudioShell.astro'
+import BlogListing from '~/components/BlogListing.astro'
+
+const entries = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf())
+---
+
+<BaseLayout title="Writing — Bruce Chau" description="Notes about software, health, and ideas.">
+  <StudioShell active="/blogs" filename="blogs/">
+    <main class="blog-index">
+      <header class="blog-index__hero">
+        <h1>Writing</h1>
+        <p>Notes from building software, taking care of the human running it, and thinking in public.</p>
+      </header>
+      <BlogListing entries={entries} />
+    </main>
+  </StudioShell>
+</BaseLayout>

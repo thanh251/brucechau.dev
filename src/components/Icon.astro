@@ -1,0 +1,30 @@
+---
+interface Props {
+  name: string
+  size?: number
+}
+
+const { name, size = 16 } = Astro.props
+const paths: Record<string, string> = {
+  file: 'M4 2.5h5l3 3V14H4z M9 2.5V6h3',
+  folder: 'M2 4h5l1.5 2H14v7H2z',
+  star: 'm8 1.8 1.8 3.8 4.2.6-3 2.9.7 4.1L8 11.1l-3.7 2 .7-4.1-3-2.9 4.2-.6z',
+  user: 'M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5 6c.4-3 2-4.5 5-4.5s4.6 1.5 5 4.5',
+  cube: 'm8 1.5 6 3.3v6.4L8 14.5l-6-3.3V4.8z M2 4.8l6 3.3 6-3.3M8 8.1v6.4',
+  calendar: 'M3 3.5h10v10H3z M5 1.5v4M11 1.5v4M3 6.5h10',
+  panel: 'M2 2.5h12v11H2z M10.5 2.5v11',
+  search: 'M7 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm4-1 3 3',
+  book: 'M3 2.5h6a2 2 0 0 1 2 2v9H5a2 2 0 0 0-2 1z M11 13.5h1.5V3H11',
+  tool: 'M9.5 2.5a4 4 0 0 0 4.2 5.7l-6.8 6.8-3-3 6.8-6.8a4 4 0 0 0-1.2-3.7z',
+  pin: 'M8 14s4-4.2 4-8A4 4 0 1 0 4 6c0 3.8 4 8 4 8Zm0-6a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z',
+  clock: 'M8 14a6 6 0 1 0 0-12 6 6 0 0 0 0 12Zm0-9v3.5l2.5 1.5',
+  chevron: 'm5 6 3 3 3-3',
+  sun: 'M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6 13 13M13 3l-1.4 1.4M4.4 11.6 3 13',
+  moon: 'M13.5 10.5A6 6 0 0 1 5.5 2.5a6 6 0 1 0 8 8Z',
+  monitor: 'M2 2.5h12v9H2zM6 14h4M8 11.5V14',
+}
+---
+
+<svg width={size} height={size} viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round">
+  <path d={paths[name] ?? paths.file}></path>
+</svg>

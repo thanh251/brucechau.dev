@@ -1,0 +1,29 @@
+---
+import { getCollection } from 'astro:content'
+import BaseLayout from '~/layouts/BaseLayout.astro'
+import StudioShell from '~/components/StudioShell.astro'
+import BlogListing from '~/components/BlogListing.astro'
+
+type Category = 'tech' | 'health' | 'ideas'
+
+export function getStaticPaths() {
+  const categories = ['tech', 'health', 'ideas'] as const
+  return categories.map((category) => ({ params: { category }, props: { category } }))
+}
+
+const { category } = Astro.props as { category: Category }
+const entries = (await getCollection('blog', ({ data }) => !data.draft && data.category === category))
+  .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf())
+---
+
+<BaseLayout title={`${category} notes — Bruce Chau`} description={`Notes filed under ${category}.`}>
+  <StudioShell active={`/blogs/${category}`} filename={`blogs/${category}/`}>
+    <main class="blog-index">
+      <header class="blog-index__hero">
+        <h1>{category}</h1>
+        <p>A focused view of everything filed in the <strong>{category}</strong> folder.</p>
+      </header>
+      <BlogListing entries={entries} active={category} />
+    </main>
+  </StudioShell>
+</BaseLayout>

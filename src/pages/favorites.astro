@@ -1,0 +1,18 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro'
+import StudioShell from '~/components/StudioShell.astro'
+import ProsePage from '~/components/ProsePage.astro'
+---
+
+<BaseLayout title="Favorites — Bruce Chau">
+  <StudioShell active="/favorites" filename="favorites.md">
+    <ProsePage eyebrow="personal index" title="Favorites" description="Things I return to, recommend, or simply want to remember.">
+      <div class="collection-grid">
+        <article class="content-card"><h3>Books</h3><p>Designing Data-Intensive Applications, The Mom Test, and a growing reading queue.</p></article>
+        <article class="content-card"><h3>Software</h3><p>Tools that feel focused, fast, and respectful of attention.</p></article>
+        <article class="content-card"><h3>Places</h3><p>Cafés, walks, and corners of the web worth revisiting.</p></article>
+        <article class="content-card"><h3>Media</h3><p>Albums, films, talks, and long-form conversations.</p></article>
+      </div>
+    </ProsePage>
+  </StudioShell>
+</BaseLayout>

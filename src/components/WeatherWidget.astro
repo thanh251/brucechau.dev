@@ -1,0 +1,146 @@
+---
+import Icon from './Icon.astro'
+---
+
+<section class="rail-item weather-widget" aria-labelledby="weather-title">
+  <Icon name="sun" size={19} />
+  <div>
+    <div class="weather-widget__heading">
+      <strong id="weather-title">Weather</strong>
+      <span class="weather-widget__symbol" id="weather-symbol" aria-hidden="true">·</span>
+    </div>
+
+    <div class="weather-widget__empty" id="weather-empty">
+      <span>Local forecast needs your location.</span>
+      <button id="request-weather" type="button">Show weather</button>
+    </div>
+
+    <div class="weather-widget__data" id="weather-data" hidden>
+      <div class="weather-widget__temperature">
+        <b id="weather-temperature">--°</b>
+        <span id="weather-condition">Local weather</span>
+      </div>
+      <dl>
+        <div><dt>Feels like</dt><dd id="weather-feels-like">--°</dd></div>
+        <div><dt>Humidity</dt><dd id="weather-humidity">--%</dd></div>
+        <div><dt>Rain forecast</dt><dd id="weather-rain">--%</dd></div>
+      </dl>
+      <small>Forecast by <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a></small>
+    </div>
+  </div>
+</section>
+
+<script>
+  type WeatherResponse = {
+    current?: {
+      time?: string
+      temperature_2m?: number
+      apparent_temperature?: number
+      relative_humidity_2m?: number
+      weather_code?: number
+    }
+    hourly?: {
+      time?: string[]
+      precipitation_probability?: number[]
+    }
+  }
+
+  const empty = document.querySelector<HTMLElement>('#weather-empty')
+  const data = document.querySelector<HTMLElement>('#weather-data')
+  const button = document.querySelector<HTMLButtonElement>('#request-weather')
+  const temperature = document.querySelector<HTMLElement>('#weather-temperature')
+  const feelsLike = document.querySelector<HTMLElement>('#weather-feels-like')
+  const humidity = document.querySelector<HTMLElement>('#weather-humidity')
+  const rain = document.querySelector<HTMLElement>('#weather-rain')
+  const condition = document.querySelector<HTMLElement>('#weather-condition')
+  const symbol = document.querySelector<HTMLElement>('#weather-symbol')
+
+  const weatherLabel = (code = 0) => {
+    if (code === 0) return { label: 'Clear sky', symbol: '☀' }
+    if (code <= 3) return { label: 'Partly cloudy', symbol: '◒' }
+    if (code <= 48) return { label: 'Foggy', symbol: '≈' }
+    if (code <= 67) return { label: 'Rain', symbol: '☂' }
+    if (code <= 77) return { label: 'Snow', symbol: '✦' }
+    if (code <= 82) return { label: 'Rain showers', symbol: '☂' }
+    return { label: 'Thunderstorm', symbol: 'ϟ' }
+  }
+
+  const renderWeather = (weather: WeatherResponse) => {
+    if (!weather.current) throw new Error('Current weather is missing')
+    const current = weather.current
+    const rainIndex = weather.hourly?.time?.findIndex((time) => time === current.time) ?? -1
+    const rainChance = rainIndex >= 0 ? weather.hourly?.precipitation_probability?.[rainIndex] : weather.hourly?.precipitation_probability?.[0]
+    const meta = weatherLabel(current.weather_code)
+
+    if (temperature) temperature.textContent = `${Math.round(current.temperature_2m ?? 0)}°`
+    if (feelsLike) feelsLike.textContent = `${Math.round(current.apparent_temperature ?? 0)}°`
+    if (humidity) humidity.textContent = `${Math.round(current.relative_humidity_2m ?? 0)}%`
+    if (rain) rain.textContent = `${Math.round(rainChance ?? 0)}%`
+    if (condition) condition.textContent = meta.label
+    if (symbol) symbol.textContent = meta.symbol
+    if (empty) empty.hidden = true
+    if (data) data.hidden = false
+  }
+
+  const loadWeather = async (latitude: number, longitude: number) => {
+    if (button) {
+      button.disabled = true
+      button.textContent = 'Loading…'
+    }
+
+    try {
+      const query = new URLSearchParams({
+        latitude: String(latitude),
+        longitude: String(longitude),
+        current: 'temperature_2m,apparent_temperature,relative_humidity_2m,weather_code',
+        hourly: 'precipitation_probability',
+        forecast_hours: '3',
+        timezone: 'auto',
+      })
+      const response = await fetch(`https://api.open-meteo.com/v1/forecast?${query}`)
+      if (!response.ok) throw new Error('Weather request failed')
+      const weather = await response.json() as WeatherResponse
+      renderWeather(weather)
+      sessionStorage.setItem('current-weather', JSON.stringify(weather))
+    } catch {
+      if (empty) empty.querySelector('span')!.textContent = 'Weather is unavailable right now.'
+      if (button) {
+        button.disabled = false
+        button.textContent = 'Try again'
+      }
+    }
+  }
+
+  const cachedWeather = sessionStorage.getItem('current-weather')
+  if (cachedWeather) {
+    try { renderWeather(JSON.parse(cachedWeather) as WeatherResponse) } catch { sessionStorage.removeItem('current-weather') }
+  }
+
+  window.addEventListener('location:resolved', ((event: CustomEvent<{ latitude: number, longitude: number }>) => {
+    void loadWeather(event.detail.latitude, event.detail.longitude)
+  }) as EventListener)
+
+  button?.addEventListener('click', () => {
+    if (!navigator.geolocation) {
+      if (empty) empty.querySelector('span')!.textContent = 'Geolocation is unavailable in this browser.'
+      button.hidden = true
+      return
+    }
+
+    button.disabled = true
+    button.textContent = 'Requesting…'
+    navigator.geolocation.getCurrentPosition(({ coords }) => {
+      void loadWeather(coords.latitude, coords.longitude)
+    }, (error) => {
+      if (empty) empty.querySelector('span')!.textContent = error.code === error.PERMISSION_DENIED
+        ? 'Location permission was denied.'
+        : 'Unable to read your location.'
+      button.disabled = false
+      button.textContent = 'Try again'
+    }, {
+      enableHighAccuracy: false,
+      timeout: 12_000,
+      maximumAge: 600_000,
+    })
+  })
+</script>

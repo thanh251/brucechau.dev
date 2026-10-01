@@ -1,0 +1,15 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro'
+import StudioShell from '~/components/StudioShell.astro'
+import ProsePage from '~/components/ProsePage.astro'
+---
+
+<BaseLayout title="Who am I — Bruce Chau">
+  <StudioShell active="/about/whoami" filename="about/whoami.md">
+    <ProsePage eyebrow="about" title="Who am I?" description="I’m Bruce — a developer who enjoys turning fuzzy ideas into useful, carefully made software.">
+      <p>I am currently studying at PTIT and building with Weaverse. This site is my public notebook: a place to document what I learn before the details fade.</p>
+      <h2>What I care about</h2>
+      <ul><li>Software that feels calm and obvious to use.</li><li>Strong fundamentals over fashionable complexity.</li><li>Health, curiosity, and the patience to keep learning.</li></ul>
+    </ProsePage>
+  </StudioShell>
+</BaseLayout>

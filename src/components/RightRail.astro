@@ -1,0 +1,57 @@
+---
+import Icon from './Icon.astro'
+import WeatherWidget from './WeatherWidget.astro'
+---
+
+<aside class="right-rail" id="right-rail" aria-label="Current status">
+  <div class="right-rail__heading"><span><Icon name="file" /> NOW</span><Icon name="chevron" size={13} /></div>
+  <div class="rail-item">
+    <Icon name="clock" size={19} />
+    <div>
+      <strong>Local time</strong>
+      <span class="local-time" id="local-time">
+        <b id="local-clock">--:--:--</b>
+        <em id="local-period">Local time</em>
+        <small id="local-date"></small>
+      </span>
+    </div>
+  </div>
+  <WeatherWidget />
+</aside>
+
+<script>
+  const clock = document.querySelector<HTMLElement>('#local-clock')
+  const period = document.querySelector<HTMLElement>('#local-period')
+  const date = document.querySelector<HTMLElement>('#local-date')
+
+  const getDayPeriod = (hour: number) => {
+    if (hour >= 5 && hour < 12) return 'Morning'
+    if (hour >= 12 && hour < 17) return 'Afternoon'
+    if (hour >= 17 && hour < 21) return 'Evening'
+    return 'Night'
+  }
+
+  const renderTime = () => {
+    const now = new Date()
+    if (clock) clock.textContent = new Intl.DateTimeFormat('en-GB', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    }).format(now)
+    if (period) period.textContent = getDayPeriod(now.getHours())
+    if (date) {
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+      const calendarDate = new Intl.DateTimeFormat('en-GB', {
+        weekday: 'long',
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+      }).format(now)
+      date.textContent = `${calendarDate} · ${timeZone}`
+    }
+  }
+
+  renderTime()
+  window.setInterval(renderTime, 1_000)
+</script>

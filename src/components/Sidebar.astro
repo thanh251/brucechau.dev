@@ -1,0 +1,91 @@
+---
+import Icon from './Icon.astro'
+import { NAV_GROUPS } from '~/lib/site'
+
+interface Props { active?: string }
+const { active = '/' } = Astro.props
+const isActive = (href: string) => href === '/' ? active === '/' : active === href || active.startsWith(`${href}/`)
+---
+
+<aside class="sidebar" id="site-sidebar" aria-label="Primary navigation">
+  <div class="sidebar__heading">· BRUCE.CHAU</div>
+  <nav class="file-tree">
+    <a class:list={['tree-row', { active: active === '/' }]} href="/">
+      <Icon name="file" /> <span>README.md</span>
+    </a>
+    {NAV_GROUPS.map((group) => 'children' in group ? (
+      <details open class="tree-group">
+        <summary class:list={['tree-row', { active: isActive(group.href) && !group.children.some((child) => isActive(child.href)) }]}>
+          <span class="tree-summary-label"><Icon name={group.label === 'BLOGS' ? 'folder' : 'user'} /> {group.label}</span>
+          <Icon name="chevron" size={13} />
+        </summary>
+        <div class="tree-children">
+          {group.children.map((child) => (
+            <a class:list={['tree-row', { active: isActive(child.href) }]} href={child.href}>
+              <Icon name="folder" /> <span>{child.label}</span>
+            </a>
+          ))}
+        </div>
+      </details>
+    ) : (
+      <a class:list={['tree-row', { active: isActive(group.href) }]} href={group.href}>
+        <Icon name={group.label === 'FAVORITES' ? 'star' : group.label === 'PROJECTS' ? 'cube' : 'calendar'} />
+        <span>{group.label}</span>
+      </a>
+    ))}
+  </nav>
+  <div class="network-status" id="network-status" data-state="connecting" role="status" aria-live="polite">
+    <span class="network-status__dot" aria-hidden="true"></span>
+    <span id="network-status-label">Connecting…</span>
+  </div>
+</aside>
+
+<script>
+  const networkStatus = document.querySelector<HTMLElement>('#network-status')
+  const networkLabel = document.querySelector<HTMLElement>('#network-status-label')
+  let networkCheck: number | undefined
+
+  const showNetworkState = (state: 'connected' | 'connecting' | 'disconnected') => {
+    if (!networkStatus || !networkLabel) return
+    networkStatus.dataset.state = state
+    networkLabel.textContent = state === 'connected'
+      ? 'Connected'
+      : state === 'connecting'
+        ? 'Connecting…'
+        : 'Disconnected'
+  }
+
+  const verifyConnection = async () => {
+    window.clearTimeout(networkCheck)
+    if (!navigator.onLine) {
+      showNetworkState('disconnected')
+      return
+    }
+
+    showNetworkState('connecting')
+    try {
+      const response = await fetch(`/?network-check=${Date.now()}`, {
+        method: 'HEAD',
+        cache: 'no-store',
+      })
+      showNetworkState(response.ok ? 'connected' : 'disconnected')
+    } catch {
+      showNetworkState('disconnected')
+    }
+  }
+
+  const scheduleConnectionCheck = () => {
+    networkCheck = window.setTimeout(() => void verifyConnection(), 350)
+  }
+
+  window.addEventListener('online', scheduleConnectionCheck)
+  window.addEventListener('offline', () => {
+    window.clearTimeout(networkCheck)
+    showNetworkState('disconnected')
+  })
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) void verifyConnection()
+  })
+
+  void verifyConnection()
+</script>

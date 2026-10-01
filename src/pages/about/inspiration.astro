@@ -1,0 +1,15 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro'
+import StudioShell from '~/components/StudioShell.astro'
+import ProsePage from '~/components/ProsePage.astro'
+---
+
+<BaseLayout title="Inspiration — Bruce Chau">
+  <StudioShell active="/about/inspiration" filename="about/inspiration.md">
+    <ProsePage eyebrow="reference shelf" title="Inspiration" description="People and products that shape how I think about craft, writing, and the web.">
+      <p>This site takes inspiration from personal blogs that feel like places, not feeds — including Leo Huỳnh’s thoughtful structure, developer tools, and the quiet precision of native macOS interfaces.</p>
+      <h2>Design principles</h2>
+      <ul><li>Content should be easy to scan and pleasant to linger on.</li><li>Motion should explain state, never compete for attention.</li><li>Every page should have a useful permanent URL.</li></ul>
+    </ProsePage>
+  </StudioShell>
+</BaseLayout>

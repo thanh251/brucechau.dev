@@ -1,0 +1,16 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro'
+import StudioShell from '~/components/StudioShell.astro'
+import ProsePage from '~/components/ProsePage.astro'
+---
+
+<BaseLayout title="Setup — Bruce Chau">
+  <StudioShell active="/about/setup" filename="about/setup.md">
+    <ProsePage eyebrow="workstation" title="Setup" description="A practical record of the environment behind the work.">
+      <h2>Philosophy</h2>
+      <p>The best setup is the one that disappears. I optimize for quick navigation, readable type, reliable defaults, and a short path from idea to deployed result.</p>
+      <h2>Website stack</h2>
+      <p>Astro renders static pages, React powers only the interactive islands, MDX stores posts beside the code, Bun manages the toolchain, and Cloudflare Pages serves the result.</p>
+    </ProsePage>
+  </StudioShell>
+</BaseLayout>

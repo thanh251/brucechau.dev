@@ -1,0 +1,16 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro'
+import StudioShell from '~/components/StudioShell.astro'
+import ProsePage from '~/components/ProsePage.astro'
+---
+
+<BaseLayout title="Projects — Bruce Chau">
+  <StudioShell active="/projects" filename="projects.md">
+    <ProsePage eyebrow="selected work" title="Projects" description="Products, experiments, and small useful things I am building.">
+      <div class="collection-grid">
+        <article class="content-card"><h3>brucechau.dev</h3><p>This living archive, designed as a calm desktop workspace and shipped as a static Astro site.</p></article>
+        <article class="content-card"><h3>Next project</h3><p>A reserved space for the next thing worth making. The useful constraint: ship it small.</p></article>
+      </div>
+    </ProsePage>
+  </StudioShell>
+</BaseLayout>

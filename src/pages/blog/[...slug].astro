@@ -1,0 +1,49 @@
+---
+import { getCollection, render } from 'astro:content'
+import BaseLayout from '~/layouts/BaseLayout.astro'
+import StudioShell from '~/components/StudioShell.astro'
+import Comments from '~/components/Comments'
+
+export async function getStaticPaths() {
+  const entries = await getCollection('blog', ({ data }) => !data.draft)
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }))
+}
+
+const { entry } = Astro.props
+const { Content, headings } = await render(entry)
+const readingMinutes = Math.max(1, Math.ceil((entry.body ?? '').split(/\s+/).length / 220))
+const formatDate = (date: Date) => date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+const giscus = {
+  repo: import.meta.env.PUBLIC_GISCUS_REPO,
+  repoId: import.meta.env.PUBLIC_GISCUS_REPO_ID,
+  category: import.meta.env.PUBLIC_GISCUS_CATEGORY,
+  categoryId: import.meta.env.PUBLIC_GISCUS_CATEGORY_ID,
+}
+const commentsEnabled = Object.values(giscus).every(Boolean)
+const giscusProps = {
+  repo: giscus.repo as `${string}/${string}`,
+  repoId: giscus.repoId!,
+  category: giscus.category!,
+  categoryId: giscus.categoryId!,
+}
+---
+
+<BaseLayout title={`${entry.data.title} — Bruce Chau`} description={entry.data.description} type="article">
+  <StudioShell active={`/blogs/${entry.data.category}`} filename={`${entry.id}.mdx`}>
+    <article class="article">
+      <header class="article__header">
+        <a class="article__category" href={`/blogs/${entry.data.category}`}>{entry.data.category}</a>
+        <h1>{entry.data.title}</h1>
+        <p class="article__summary">{entry.data.description}</p>
+        <div class="article__meta">
+          <time datetime={entry.data.publishedAt.toISOString()}>{formatDate(entry.data.publishedAt)}</time>
+          <span>·</span><span>{readingMinutes} min read</span><span>·</span><span>{headings.length} sections</span>
+        </div>
+      </header>
+      <div class="prose"><Content /></div>
+      {commentsEnabled && (
+        <Comments client:visible {...giscusProps} />
+      )}
+    </article>
+  </StudioShell>
+</BaseLayout>

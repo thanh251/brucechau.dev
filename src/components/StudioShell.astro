@@ -1,0 +1,54 @@
+---
+import Icon from './Icon.astro'
+import RightRail from './RightRail.astro'
+import SearchPalette from './SearchPalette.astro'
+import Sidebar from './Sidebar.astro'
+import ThemeToggle from './ThemeToggle.astro'
+
+interface Props {
+  active?: string
+  filename?: string
+}
+
+const { active = Astro.url.pathname, filename = 'README.md' } = Astro.props
+---
+
+<div class="desktop-frame">
+  <header class="titlebar">
+    <button class="icon-button mobile-only" type="button" data-toggle-sidebar aria-label="Toggle navigation"><Icon name="panel" /></button>
+    <a class="titlebar__path" href="/">BRUCE.CHAU <span>/</span> {filename}</a>
+    <div class="titlebar__actions">
+      <button class="search-button" type="button" data-open-search aria-label="Search this site"><Icon name="search" /><span>Search…</span><kbd>⌘ K</kbd></button>
+      <ThemeToggle />
+      <button class="icon-button" type="button" data-toggle-rail aria-label="Toggle right sidebar"><Icon name="panel" /></button>
+    </div>
+  </header>
+  <SearchPalette />
+  <Sidebar active={active} />
+  <main class="main-pane">
+    <div class="tabbar"><span class="active-tab"><Icon name="file" /> {filename}</span><span class="motto">Write&nbsp; / &nbsp;Build&nbsp; / &nbsp;Learn&nbsp; / &nbsp;Repeat</span></div>
+    <div class="page-scroll"><slot /></div>
+  </main>
+  <RightRail />
+</div>
+<div class="mobile-backdrop" data-backdrop></div>
+
+<script>
+  const frame = document.querySelector<HTMLElement>('.desktop-frame')
+  const backdrop = document.querySelector<HTMLElement>('[data-backdrop]')
+  const closeMobile = () => {
+    frame?.classList.remove('sidebar-open')
+    backdrop?.classList.remove('visible')
+  }
+
+  document.querySelector('[data-toggle-rail]')?.addEventListener('click', () => {
+    const collapsed = frame?.classList.toggle('rail-collapsed') ?? false
+    localStorage.setItem('rightRailCollapsed', String(collapsed))
+  })
+  document.querySelector('[data-toggle-sidebar]')?.addEventListener('click', () => {
+    frame?.classList.toggle('sidebar-open')
+    backdrop?.classList.toggle('visible')
+  })
+  backdrop?.addEventListener('click', closeMobile)
+  if (localStorage.getItem('rightRailCollapsed') === 'true') frame?.classList.add('rail-collapsed')
+</script>

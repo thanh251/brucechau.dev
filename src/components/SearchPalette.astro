@@ -1,0 +1,108 @@
+---
+import { getCollection } from 'astro:content'
+
+const posts = await getCollection('blog')
+const pages = [
+  { title: 'Home', detail: 'README.md', href: '/' },
+  { title: 'All writing', detail: 'Blogs', href: '/blogs' },
+  { title: 'Tech', detail: 'Blog category', href: '/blogs/tech' },
+  { title: 'Health', detail: 'Blog category', href: '/blogs/health' },
+  { title: 'Ideas', detail: 'Blog category', href: '/blogs/ideas' },
+  { title: 'Favorites', detail: 'Saved things', href: '/favorites' },
+  { title: 'Who am I', detail: 'About', href: '/about/whoami' },
+  { title: 'Uses', detail: 'About', href: '/about/uses' },
+  { title: 'Inspiration', detail: 'About', href: '/about/inspiration' },
+  { title: 'Collections', detail: 'About', href: '/about/collections' },
+  { title: 'Setup', detail: 'About', href: '/about/setup' },
+  { title: 'Projects', detail: 'Selected work', href: '/projects' },
+  { title: 'Calendar', detail: 'Book a call', href: '/calendar' },
+]
+
+const searchItems = [
+  ...posts.map(({ id, data }) => ({
+    title: data.title,
+    detail: `${data.category} · ${data.description}`,
+    href: `/blog/${id}`,
+  })),
+  ...pages,
+]
+---
+
+<dialog class="search-palette" id="search-palette" aria-labelledby="search-palette-title">
+  <div class="search-palette__panel">
+    <label class="search-palette__input" for="site-search-input">
+      <span class="sr-only" id="search-palette-title">Search this site</span>
+      <svg width="18" height="18" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.35"><circle cx="7" cy="7" r="5"></circle><path d="m11 11 3 3"></path></svg>
+      <input id="site-search-input" type="search" placeholder="Search pages and writing…" autocomplete="off" />
+      <kbd>ESC</kbd>
+    </label>
+    <div class="search-palette__results" id="site-search-results">
+      {searchItems.map((item) => (
+        <a
+          class="search-result"
+          href={item.href}
+          data-search-text={`${item.title} ${item.detail}`.toLocaleLowerCase()}
+        >
+          <span><strong>{item.title}</strong><small>{item.detail}</small></span>
+          <span aria-hidden="true">↗</span>
+        </a>
+      ))}
+      <p class="search-palette__empty" id="site-search-empty" hidden>No matching page found.</p>
+    </div>
+    <footer><span>↑↓ navigate</span><span>↵ open</span></footer>
+  </div>
+</dialog>
+
+<script>
+  const palette = document.querySelector<HTMLDialogElement>('#search-palette')
+  const searchInput = document.querySelector<HTMLInputElement>('#site-search-input')
+  const results = [...document.querySelectorAll<HTMLAnchorElement>('.search-result')]
+  const empty = document.querySelector<HTMLElement>('#site-search-empty')
+
+  const filterResults = () => {
+    const query = searchInput?.value.trim().toLocaleLowerCase() ?? ''
+    let visible = 0
+    results.forEach((result) => {
+      const match = !query || result.dataset.searchText?.includes(query)
+      result.hidden = !match
+      if (match) visible += 1
+    })
+    if (empty) empty.hidden = visible > 0
+  }
+
+  const openSearch = () => {
+    if (!palette?.open) palette?.showModal()
+    if (searchInput) {
+      searchInput.value = ''
+      filterResults()
+      window.requestAnimationFrame(() => searchInput.focus())
+    }
+  }
+
+  document.querySelector('[data-open-search]')?.addEventListener('click', openSearch)
+  document.addEventListener('keydown', (event) => {
+    if ((event.metaKey || event.ctrlKey) && event.key.toLocaleLowerCase() === 'k') {
+      event.preventDefault()
+      openSearch()
+      return
+    }
+    if (!palette?.open || !['ArrowDown', 'ArrowUp', 'Enter'].includes(event.key)) return
+    const visible = results.filter((result) => !result.hidden)
+    if (!visible.length) return
+    const current = visible.indexOf(document.activeElement as HTMLAnchorElement)
+    if (event.key === 'Enter' && document.activeElement === searchInput) {
+      event.preventDefault()
+      visible[0].click()
+      return
+    }
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault()
+      const direction = event.key === 'ArrowDown' ? 1 : -1
+      visible[(current + direction + visible.length) % visible.length]?.focus()
+    }
+  })
+  searchInput?.addEventListener('input', filterResults)
+  palette?.addEventListener('click', (event) => {
+    if (event.target === palette) palette.close()
+  })
+</script>

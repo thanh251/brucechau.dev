@@ -1,0 +1,16 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro'
+import StudioShell from '~/components/StudioShell.astro'
+import ProsePage from '~/components/ProsePage.astro'
+---
+
+<BaseLayout title="Collections — Bruce Chau">
+  <StudioShell active="/about/collections" filename="about/collections.md">
+    <ProsePage eyebrow="cabinet" title="Collections" description="Small archives of objects and memories I enjoy keeping around.">
+      <div class="collection-grid">
+        <article class="content-card"><h3>Albums</h3><p>Records attached to a season, a place, or a version of myself.</p></article>
+        <article class="content-card"><h3>Toys</h3><p>Playful objects, figures, and delightful bits of industrial design.</p></article>
+      </div>
+    </ProsePage>
+  </StudioShell>
+</BaseLayout>

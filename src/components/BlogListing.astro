@@ -1,0 +1,34 @@
+---
+import type { CollectionEntry } from 'astro:content'
+
+interface Props {
+  entries: CollectionEntry<'blog'>[]
+  active?: 'all' | 'tech' | 'health' | 'ideas'
+}
+
+const { entries, active = 'all' } = Astro.props
+const formatDate = (date: Date) => date.toLocaleDateString('en-US', {
+  month: 'short', day: '2-digit', year: 'numeric',
+})
+---
+
+<div class="category-tabs" aria-label="Blog categories">
+  <a class:list={{ active: active === 'all' }} href="/blogs">all</a>
+  <a class:list={{ active: active === 'tech' }} href="/blogs/tech">tech</a>
+  <a class:list={{ active: active === 'health' }} href="/blogs/health">health</a>
+  <a class:list={{ active: active === 'ideas' }} href="/blogs/ideas">ideas</a>
+</div>
+
+<div class="article-list">
+  {entries.map((entry) => (
+    <article>
+      <time datetime={entry.data.publishedAt.toISOString()}>{formatDate(entry.data.publishedAt)}</time>
+      <a href={`/blog/${entry.id}`}>
+        <h2>{entry.data.title}</h2>
+        <p>{entry.data.description}</p>
+      </a>
+      <span class="article-list__meta">{entry.data.category}</span>
+    </article>
+  ))}
+  {entries.length === 0 && <p>No notes in this folder yet.</p>}
+</div>
