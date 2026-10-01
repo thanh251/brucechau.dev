@@ -5,9 +5,9 @@ export const SITE = {
   url: 'https://brucechau.pages.dev',
   email: 'hello@brucechau.dev',
   socials: {
-    github: import.meta.env.PUBLIC_GITHUB_URL || 'https://github.com/',
-    linkedin: import.meta.env.PUBLIC_LINKEDIN_URL || 'https://www.linkedin.com/',
-    facebook: import.meta.env.PUBLIC_FACEBOOK_URL || 'https://www.facebook.com/',
+    github: import.meta.env.PUBLIC_GITHUB_URL || 'https://github.com/thanh251/',
+    linkedin: import.meta.env.PUBLIC_LINKEDIN_URL || 'https://www.linkedin.com/in/tuanthanhchau/',
+    facebook: import.meta.env.PUBLIC_FACEBOOK_URL || 'https://www.facebook.com/ctthnh25/',
   },
 } as const
 
