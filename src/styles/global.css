@@ -163,6 +163,8 @@ a.tree-row:hover, .tree-row.active { background: var(--blue-soft); color: var(--
 .right-rail { grid-column: 3; grid-row: 2; min-height: 0; border-left: 1px solid var(--line); transition: opacity 160ms ease; }
 .right-rail__heading { display: flex; height: 52px; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); padding: 0 17px; font-size: 12px; font-weight: 700; letter-spacing: .08em; }
 .right-rail__heading span { display: inline-flex; align-items: center; gap: 9px; }
+.right-rail__close { display: none; width: 32px; height: 32px; place-items: center; border: 1px solid var(--line); border-radius: 7px; background: var(--panel-2); color: var(--ink); cursor: pointer; }
+.status-button span { display: none; }
 .rail-item { display: grid; grid-template-columns: 26px 1fr; gap: 10px; margin: 0 14px; padding: 22px 3px; border-bottom: 1px solid var(--line); color: var(--muted); }
 .rail-item > svg { color: var(--ink); }
 .rail-item strong, .rail-item span { display: block; }
@@ -315,15 +317,19 @@ a.tree-row:hover, .tree-row.active { background: var(--blue-soft); color: var(--
   .titlebar__actions { margin-left: auto; }
   .mobile-only { display: inline-flex; flex: 0 0 auto; }
   .menu-button { width: auto; gap: 7px; padding: 0 10px; font-size: 11px; font-weight: 700; letter-spacing: .06em; }
-  [data-toggle-rail] { display: none; }
+  .status-button { width: auto; gap: 7px; padding: 0 10px; font-size: 11px; font-weight: 700; letter-spacing: .06em; }
+  .status-button span { display: inline; }
   .main-pane { grid-column: 1; }
   .sidebar { position: fixed; z-index: 50; top: 48px; bottom: 0; left: 0; width: min(280px, calc(100vw - 48px)); visibility: hidden; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; border-right-color: var(--line); background: var(--frame); box-shadow: 18px 0 50px rgb(0 0 0 / 24%); pointer-events: none; transform: translateX(-102%); transition: transform 180ms ease, visibility 0s linear 180ms; }
   .sidebar-open .sidebar { visibility: visible; pointer-events: auto; transform: translateX(0); transition-delay: 0s; }
   .sidebar__close { display: grid; }
+  .right-rail { position: fixed; z-index: 50; top: 48px; right: 0; bottom: 0; left: auto; display: block; width: min(320px, calc(100vw - 48px)); visibility: hidden; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; border-left-color: var(--line); background: var(--frame); box-shadow: -18px 0 50px rgb(0 0 0 / 24%); opacity: 1; pointer-events: none; transform: translateX(102%); transition: transform 180ms ease, visibility 0s linear 180ms; }
+  .rail-open .right-rail { visibility: visible; overflow-y: auto; opacity: 1; pointer-events: auto; transform: translateX(0); transition-delay: 0s; }
+  .right-rail__heading > svg { display: none; }
+  .right-rail__close { display: grid; }
   .mobile-backdrop { position: fixed; z-index: 45; inset: 48px 0 0; background: rgba(0,0,0,.5); }
   .mobile-backdrop.visible { display: block; }
-  body.sidebar-drawer-open { overflow: hidden; }
-  .right-rail { display: none; }
+  body.drawer-open { overflow: hidden; }
   .career__stage .career__detail { position: relative; top: auto; right: auto; left: auto; width: calc(100% - 38%); margin: 80px 0 0 38%; }
   .career__stage { min-height: 840px; }
 }
@@ -332,8 +338,9 @@ a.tree-row:hover, .tree-row.active { background: var(--blue-soft); color: var(--
   .desktop-frame { display: block; min-height: 100vh; margin: 0; border: 0; border-radius: 0; }
   .titlebar { position: sticky; top: 0; display: flex; height: 48px; justify-content: space-between; padding: 0 10px; }
   .search-button, .theme-toggle [data-theme-value="system"], .motto { display: none; }
-  .titlebar__path { max-width: 145px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; }
+  .titlebar__path { display: none; }
   .sidebar { width: min(260px, calc(100vw - 48px)); }
+  .right-rail { width: min(300px, calc(100vw - 48px)); }
   .tabbar { padding-right: 14px; }
   .page-scroll { height: calc(100vh - 91px); }
   .home, .content-page, .blog-index, .article { width: calc(100% - 36px); }

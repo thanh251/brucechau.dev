@@ -20,7 +20,7 @@ const { active = Astro.url.pathname, filename = 'README.md' } = Astro.props
     <div class="titlebar__actions">
       <button class="search-button" type="button" data-open-search aria-label="Search this site"><Icon name="search" /><span>Search…</span><kbd>⌘ K</kbd></button>
       <ThemeToggle />
-      <button class="icon-button" type="button" data-toggle-rail aria-label="Toggle right sidebar"><Icon name="panel" /></button>
+      <button class="icon-button status-button" type="button" data-toggle-rail aria-label="Toggle right sidebar" aria-controls="right-rail" aria-expanded="true"><Icon name="clock" /><span>NOW</span></button>
     </div>
   </header>
   <SearchPalette />
@@ -37,14 +37,20 @@ const { active = Astro.url.pathname, filename = 'README.md' } = Astro.props
   const frame = document.querySelector<HTMLElement>('.desktop-frame')
   const backdrop = document.querySelector<HTMLElement>('[data-backdrop]')
   const sidebar = document.querySelector<HTMLElement>('#site-sidebar')
+  const rail = document.querySelector<HTMLElement>('#right-rail')
   const sidebarToggle = document.querySelector<HTMLButtonElement>('[data-toggle-sidebar]')
+  const railToggle = document.querySelector<HTMLButtonElement>('[data-toggle-rail]')
   const drawerQuery = matchMedia('(max-width: 1100px)')
+  const syncBackdrop = () => {
+    const open = frame?.classList.contains('sidebar-open') || frame?.classList.contains('rail-open')
+    backdrop?.classList.toggle('visible', Boolean(open))
+    document.body.classList.toggle('drawer-open', Boolean(open))
+  }
   const setSidebarOpen = (open: boolean, restoreFocus = false) => {
+    if (open) setRailOpen(false)
     frame?.classList.toggle('sidebar-open', open)
-    backdrop?.classList.toggle('visible', open)
     sidebarToggle?.setAttribute('aria-expanded', String(open))
     sidebarToggle?.setAttribute('aria-label', open ? 'Close navigation menu' : 'Open navigation menu')
-    document.body.classList.toggle('sidebar-drawer-open', open)
     if (drawerQuery.matches) {
       sidebar?.toggleAttribute('inert', !open)
       sidebar?.setAttribute('aria-hidden', String(!open))
@@ -54,26 +60,61 @@ const { active = Astro.url.pathname, filename = 'README.md' } = Astro.props
     }
     if (open) sidebar?.querySelector<HTMLElement>('a, button, summary')?.focus()
     else if (restoreFocus) sidebarToggle?.focus()
+    syncBackdrop()
+  }
+  const setRailOpen = (open: boolean, restoreFocus = false) => {
+    if (open) setSidebarOpen(false)
+    frame?.classList.toggle('rail-open', open)
+    railToggle?.setAttribute('aria-expanded', String(open))
+    railToggle?.setAttribute('aria-label', drawerQuery.matches
+      ? (open ? 'Close status panel' : 'Open status panel')
+      : 'Toggle right sidebar')
+    if (drawerQuery.matches) {
+      rail?.toggleAttribute('inert', !open)
+      rail?.setAttribute('aria-hidden', String(!open))
+    } else {
+      rail?.removeAttribute('inert')
+      rail?.removeAttribute('aria-hidden')
+    }
+    if (open) rail?.querySelector<HTMLElement>('button, a')?.focus()
+    else if (restoreFocus) railToggle?.focus()
+    syncBackdrop()
+  }
+  const closeDrawers = () => {
+    const sidebarWasOpen = frame?.classList.contains('sidebar-open') ?? false
+    const railWasOpen = frame?.classList.contains('rail-open') ?? false
+    setSidebarOpen(false, sidebarWasOpen)
+    setRailOpen(false, railWasOpen)
   }
 
-  document.querySelector('[data-toggle-rail]')?.addEventListener('click', () => {
+  railToggle?.addEventListener('click', () => {
+    if (drawerQuery.matches) {
+      setRailOpen(!frame?.classList.contains('rail-open'))
+      return
+    }
     const collapsed = frame?.classList.toggle('rail-collapsed') ?? false
+    railToggle.setAttribute('aria-expanded', String(!collapsed))
     localStorage.setItem('rightRailCollapsed', String(collapsed))
   })
   sidebarToggle?.addEventListener('click', () => {
     setSidebarOpen(!frame?.classList.contains('sidebar-open'))
   })
-  backdrop?.addEventListener('click', () => setSidebarOpen(false, true))
+  backdrop?.addEventListener('click', closeDrawers)
   document.querySelector('[data-close-sidebar]')?.addEventListener('click', () => setSidebarOpen(false, true))
+  document.querySelector('[data-close-rail]')?.addEventListener('click', () => setRailOpen(false, true))
   document.querySelector('#site-sidebar')?.addEventListener('click', (event) => {
     if ((event.target as HTMLElement).closest('a')) setSidebarOpen(false)
   })
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') setSidebarOpen(false, true)
+    if (event.key === 'Escape') closeDrawers()
   })
   drawerQuery.addEventListener('change', () => {
     setSidebarOpen(false)
+    setRailOpen(false)
   })
-  if (localStorage.getItem('rightRailCollapsed') === 'true') frame?.classList.add('rail-collapsed')
+  const railCollapsed = localStorage.getItem('rightRailCollapsed') === 'true'
+  if (railCollapsed) frame?.classList.add('rail-collapsed')
+  railToggle?.setAttribute('aria-expanded', String(!railCollapsed))
   setSidebarOpen(false)
+  setRailOpen(false)
 </script>

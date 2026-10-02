@@ -94,3 +94,54 @@ test('mobile can open, close, and navigate with the left sidebar', async ({ page
   await expect(page).toHaveURL(/\/blogs\/tech\/?$/)
   await expect(sidebar).not.toBeInViewport()
 })
+
+test('tablet can open and close the right status drawer', async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 768 })
+  await page.goto('/')
+
+  const rail = page.locator('#right-rail')
+  const toggle = page.locator('[data-toggle-rail]')
+
+  await expect(toggle).toBeVisible()
+  await expect(toggle).toHaveAttribute('aria-label', 'Open status panel')
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false')
+  await expect(rail).not.toBeInViewport()
+
+  await toggle.click()
+  await expect(rail).toBeInViewport()
+  await expect(toggle).toHaveAttribute('aria-label', 'Close status panel')
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true')
+  await expect(rail.getByText('Local time', { exact: true })).toBeVisible()
+  await expect(rail.getByText('Weather', { exact: true })).toBeVisible()
+  await expect.poll(() => page.evaluate(() => (
+    document.elementFromPoint(window.innerWidth - 20, 100)?.closest('#right-rail') !== null
+  ))).toBe(true)
+
+  await rail.getByRole('button', { name: 'Close status panel' }).click()
+  await expect(rail).not.toBeInViewport()
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false')
+})
+
+test('mobile can use the right status drawer and backdrop', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 667 })
+  await page.goto('/')
+
+  const rail = page.locator('#right-rail')
+  const toggle = page.locator('[data-toggle-rail]')
+  const backdrop = page.locator('[data-backdrop]')
+
+  await expect(toggle).toBeVisible()
+  await expect(toggle).toContainText('NOW')
+  await expect(rail).not.toBeInViewport()
+
+  await toggle.click()
+  await expect(rail).toBeInViewport()
+  await expect(backdrop).toBeVisible()
+  await expect(rail.getByText('Local time', { exact: true })).toBeVisible()
+  await expect(rail.getByText('Weather', { exact: true })).toBeVisible()
+
+  await backdrop.click({ position: { x: 20, y: 20 } })
+  await expect(rail).not.toBeInViewport()
+  await expect(backdrop).toBeHidden()
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false')
+})

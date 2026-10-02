@@ -4,7 +4,11 @@ import WeatherWidget from './WeatherWidget.astro'
 ---
 
 <aside class="right-rail" id="right-rail" aria-label="Current status">
-  <div class="right-rail__heading"><span><Icon name="file" /> NOW</span><Icon name="chevron" size={13} /></div>
+  <div class="right-rail__heading">
+    <span><Icon name="file" /> NOW</span>
+    <Icon name="chevron" size={13} />
+    <button class="right-rail__close" type="button" data-close-rail aria-label="Close status panel"><Icon name="close" /></button>
+  </div>
   <div class="rail-item">
     <Icon name="clock" size={19} />
     <div>
