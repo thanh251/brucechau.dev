@@ -15,12 +15,12 @@ const { active = Astro.url.pathname, filename = 'README.md' } = Astro.props
 
 <div class="desktop-frame">
   <header class="titlebar">
-    <button class="icon-button mobile-only menu-button" type="button" data-toggle-sidebar aria-label="Open navigation menu" aria-controls="site-sidebar" aria-expanded="false"><Icon name="panel" /><span>MENU</span></button>
+    <button class="icon-button mobile-only" type="button" data-toggle-sidebar aria-label="Open navigation menu" aria-controls="site-sidebar" aria-expanded="false"><Icon name="panel" /></button>
     <a class="titlebar__path" href="/">BRUCE.CHAU <span>/</span> {filename}</a>
     <div class="titlebar__actions">
       <button class="search-button" type="button" data-open-search aria-label="Search this site"><Icon name="search" /><span>Search…</span><kbd>⌘ K</kbd></button>
       <ThemeToggle />
-      <button class="icon-button status-button" type="button" data-toggle-rail aria-label="Toggle right sidebar" aria-controls="right-rail" aria-expanded="true"><Icon name="panel" /><span>NOW</span></button>
+      <button class="icon-button" type="button" data-toggle-rail aria-label="Toggle right sidebar" aria-controls="right-rail" aria-expanded="true"><Icon name="panel" /></button>
     </div>
   </header>
   <SearchPalette />

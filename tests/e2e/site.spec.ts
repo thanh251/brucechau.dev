@@ -131,7 +131,7 @@ test('mobile can use the right status drawer and backdrop', async ({ page }) => 
   const backdrop = page.locator('[data-backdrop]')
 
   await expect(toggle).toBeVisible()
-  await expect(toggle).toContainText('NOW')
+  await expect(toggle).toHaveAttribute('aria-label', 'Open status panel')
   await expect(rail).not.toBeInViewport()
 
   await toggle.click()
