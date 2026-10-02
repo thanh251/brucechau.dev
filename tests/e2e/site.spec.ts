@@ -36,18 +36,25 @@ test('tablet can open, close, and navigate with the left sidebar drawer', async 
   await page.goto('/')
 
   const sidebar = page.getByRole('complementary', { name: 'Primary navigation' })
-  const toggle = page.getByRole('button', { name: 'Toggle navigation' })
+  const toggle = page.locator('[data-toggle-sidebar]')
 
   await expect(toggle).toBeVisible()
+  await expect(toggle).toHaveAttribute('aria-label', 'Open navigation menu')
   await expect(toggle).toHaveAttribute('aria-expanded', 'false')
   await expect(sidebar).not.toBeInViewport()
 
   await toggle.click()
   await expect(sidebar).toBeInViewport()
   await expect(toggle).toHaveAttribute('aria-expanded', 'true')
+  await expect(toggle).toHaveAttribute('aria-label', 'Close navigation menu')
   await expect.poll(() => page.evaluate(() => (
     document.elementFromPoint(20, 100)?.closest('#site-sidebar') !== null
   ))).toBe(true)
+
+  await sidebar.getByRole('button', { name: 'Close navigation menu' }).click()
+  await expect(sidebar).not.toBeInViewport()
+
+  await page.getByRole('button', { name: 'Open navigation menu' }).click()
 
   await sidebar.getByRole('link', { name: 'PROJECTS' }).click()
   await expect(page).toHaveURL(/\/projects\/?$/)
@@ -59,16 +66,18 @@ test('mobile can open, close, and navigate with the left sidebar', async ({ page
   await page.goto('/')
 
   const sidebar = page.getByRole('complementary', { name: 'Primary navigation' })
-  const toggle = page.getByRole('button', { name: 'Toggle navigation' })
+  const toggle = page.locator('[data-toggle-sidebar]')
   const backdrop = page.locator('[data-backdrop]')
 
   await expect(toggle).toBeVisible()
+  await expect(toggle).toHaveAttribute('aria-label', 'Open navigation menu')
   await expect(toggle).toHaveAttribute('aria-expanded', 'false')
   await expect(sidebar).not.toBeInViewport()
 
-  await toggle.click()
+  await page.getByRole('button', { name: 'Open navigation menu' }).click()
   await expect(sidebar).toBeInViewport()
   await expect(toggle).toHaveAttribute('aria-expanded', 'true')
+  await expect(toggle).toHaveAttribute('aria-label', 'Close navigation menu')
   await expect(backdrop).toBeVisible()
   await expect.poll(() => page.evaluate(() => (
     document.elementFromPoint(20, 100)?.closest('#site-sidebar') !== null

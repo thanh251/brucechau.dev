@@ -8,7 +8,10 @@ const isActive = (href: string) => href === '/' ? active === '/' : active === hr
 ---
 
 <aside class="sidebar" id="site-sidebar" aria-label="Primary navigation">
-  <div class="sidebar__heading">· BRUCE.CHAU</div>
+  <div class="sidebar__heading">
+    <span>· BRUCE.CHAU</span>
+    <button class="sidebar__close" type="button" data-close-sidebar aria-label="Close navigation menu"><Icon name="close" /></button>
+  </div>
   <nav class="file-tree">
     <a class:list={['tree-row', { active: active === '/' }]} href="/">
       <Icon name="file" /> <span>README.md</span>
