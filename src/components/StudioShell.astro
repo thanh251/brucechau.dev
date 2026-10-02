@@ -15,7 +15,7 @@ const { active = Astro.url.pathname, filename = 'README.md' } = Astro.props
 
 <div class="desktop-frame">
   <header class="titlebar">
-    <button class="icon-button mobile-only" type="button" data-toggle-sidebar aria-label="Toggle navigation"><Icon name="panel" /></button>
+    <button class="icon-button mobile-only" type="button" data-toggle-sidebar aria-label="Toggle navigation" aria-controls="site-sidebar" aria-expanded="false"><Icon name="panel" /></button>
     <a class="titlebar__path" href="/">BRUCE.CHAU <span>/</span> {filename}</a>
     <div class="titlebar__actions">
       <button class="search-button" type="button" data-open-search aria-label="Search this site"><Icon name="search" /><span>Search…</span><kbd>⌘ K</kbd></button>
@@ -36,19 +36,30 @@ const { active = Astro.url.pathname, filename = 'README.md' } = Astro.props
 <script>
   const frame = document.querySelector<HTMLElement>('.desktop-frame')
   const backdrop = document.querySelector<HTMLElement>('[data-backdrop]')
-  const closeMobile = () => {
-    frame?.classList.remove('sidebar-open')
-    backdrop?.classList.remove('visible')
+  const sidebarToggle = document.querySelector<HTMLButtonElement>('[data-toggle-sidebar]')
+  const setSidebarOpen = (open: boolean) => {
+    frame?.classList.toggle('sidebar-open', open)
+    backdrop?.classList.toggle('visible', open)
+    sidebarToggle?.setAttribute('aria-expanded', String(open))
+    document.body.classList.toggle('sidebar-drawer-open', open)
   }
 
   document.querySelector('[data-toggle-rail]')?.addEventListener('click', () => {
     const collapsed = frame?.classList.toggle('rail-collapsed') ?? false
     localStorage.setItem('rightRailCollapsed', String(collapsed))
   })
-  document.querySelector('[data-toggle-sidebar]')?.addEventListener('click', () => {
-    frame?.classList.toggle('sidebar-open')
-    backdrop?.classList.toggle('visible')
+  sidebarToggle?.addEventListener('click', () => {
+    setSidebarOpen(!frame?.classList.contains('sidebar-open'))
   })
-  backdrop?.addEventListener('click', closeMobile)
+  backdrop?.addEventListener('click', () => setSidebarOpen(false))
+  document.querySelector('#site-sidebar')?.addEventListener('click', (event) => {
+    if ((event.target as HTMLElement).closest('a')) setSidebarOpen(false)
+  })
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') setSidebarOpen(false)
+  })
+  matchMedia('(min-width: 1101px)').addEventListener('change', (event) => {
+    if (event.matches) setSidebarOpen(false)
+  })
   if (localStorage.getItem('rightRailCollapsed') === 'true') frame?.classList.add('rail-collapsed')
 </script>
