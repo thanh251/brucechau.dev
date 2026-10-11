@@ -1,5 +1,6 @@
 ---
 import '~/styles/global.css'
+import '~/styles/exhibition.css'
 import { SITE } from '~/lib/site'
 
 interface Props {
@@ -22,13 +23,13 @@ const umamiScript = import.meta.env.PUBLIC_UMAMI_SCRIPT_URL ?? 'https://analytic
 ---
 
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#111214" />
+    <meta name="theme-color" content="#fbfaf7" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={canonical} />
     <link rel="alternate" type="application/rss+xml" title={`${SITE.name} RSS`} href="/feed.xml" />
@@ -41,7 +42,7 @@ const umamiScript = import.meta.env.PUBLIC_UMAMI_SCRIPT_URL ?? 'https://analytic
     <title>{title}</title>
     <script is:inline>
       (() => {
-        const saved = localStorage.getItem('theme') || 'system'
+        const saved = localStorage.getItem('theme') || 'light'
         const resolved = saved === 'system'
           ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
           : saved
@@ -61,17 +62,21 @@ const umamiScript = import.meta.env.PUBLIC_UMAMI_SCRIPT_URL ?? 'https://analytic
         document.documentElement.dataset.theme = resolved
         document.documentElement.dataset.themePreference = preference
         localStorage.setItem('theme', preference)
+        document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.setAttribute('content', resolved === 'dark' ? '#171916' : '#fbfaf7')
+        document.querySelector<HTMLButtonElement>('[data-theme-toggle]')?.setAttribute('aria-label', resolved === 'dark' ? 'Switch to light theme' : 'Switch to dark theme')
       }
 
       document.addEventListener('click', (event) => {
         const target = event.target as HTMLElement
-        const themeButton = target.closest<HTMLElement>('[data-theme-value]')
-        if (themeButton?.dataset.themeValue) applyTheme(themeButton.dataset.themeValue)
+        const themeButton = target.closest<HTMLElement>('[data-theme-toggle]')
+        if (themeButton) applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark')
       })
 
       matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-        if ((localStorage.getItem('theme') || 'system') === 'system') applyTheme('system')
+        if (localStorage.getItem('theme') === 'system') applyTheme('system')
       })
+
+      document.querySelector<HTMLButtonElement>('[data-theme-toggle]')?.setAttribute('aria-label', document.documentElement.dataset.theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme')
     </script>
   </body>
 </html>

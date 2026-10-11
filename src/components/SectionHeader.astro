@@ -1,9 +1,10 @@
 ---
-interface Props { title: string; href?: string; action?: string }
-const { title, href, action = 'View all →' } = Astro.props
+interface Props { title: string; href?: string; action?: string; index?: string }
+const { title, href, action = 'View all →', index } = Astro.props
 ---
 
 <header class="section-header">
+  {index && <span class="section-header__index" aria-hidden="true">{index}</span>}
   <h2>{title}</h2>
   {href && <a href={href}>{action}</a>}
 </header>

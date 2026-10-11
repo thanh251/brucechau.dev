@@ -4,7 +4,7 @@ test('homepage exposes the configured social profiles', async ({ page }) => {
   await page.goto('/')
 
   await expect(page).toHaveTitle(/Bruce Chau/)
-  await expect(page.getByRole('heading', { name: 'I’m Bruce Chau' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Bruce Chau' })).toBeVisible()
 
   const socialProfiles = page.getByLabel('Social profiles')
   await expect(socialProfiles.getByRole('link', { name: /GitHub/ })).toHaveAttribute(
@@ -29,6 +29,43 @@ test('calendar exposes the Google Calendar booking link', async ({ page }) => {
     'href',
     /^https:\/\/calendar\.app\.google\/EiHWm4ea8B69bWHXA\/?$/,
   )
+})
+
+test('gallery layout fits mobile and the career range stays clear of events', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 })
+  await page.goto('/')
+
+  await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375)
+  await expect(page.getByRole('heading', { name: 'Bruce Chau' })).toBeVisible()
+
+  const range = await page.locator('.career__bracket span').boundingBox()
+  const firstEvent = await page.locator('.career-event').first().boundingBox()
+  expect(range).not.toBeNull()
+  expect(firstEvent).not.toBeNull()
+  expect(range!.y + range!.height).toBeLessThan(firstEvent!.y)
+})
+
+test('theme switch works in both directions', async ({ page }) => {
+  await page.goto('/')
+
+  const theme = page.locator('[data-theme-toggle]')
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+  await theme.click()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+  await theme.click()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+})
+
+test('desktop status panel can be hidden and restored', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/')
+
+  const rail = page.locator('#right-rail')
+  await expect(rail).toBeVisible()
+  await page.getByRole('button', { name: 'Hide status panel' }).click()
+  await expect(rail).toHaveCSS('opacity', '0')
+  await page.getByRole('button', { name: 'Show status panel' }).click()
+  await expect(rail).toHaveCSS('opacity', '1')
 })
 
 test('tablet can open, close, and navigate with the left sidebar drawer', async ({ page }) => {

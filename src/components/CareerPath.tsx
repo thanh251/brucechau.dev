@@ -44,7 +44,8 @@ export default function CareerPath() {
   return (
     <section className="career" aria-labelledby="career-title">
       <header className="career__header">
-        <h2 id="career-title">CAREER PATH</h2>
+        <span className="career__index" aria-hidden="true">04</span>
+        <h2 id="career-title">Career Path</h2>
         <p>Click an event to inspect the chapter.</p>
       </header>
 

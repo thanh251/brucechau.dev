@@ -44,18 +44,19 @@ const isActive = (href: string) => href === '/' ? active === '/' : active === hr
 </aside>
 
 <script>
-  const networkStatus = document.querySelector<HTMLElement>('#network-status')
-  const networkLabel = document.querySelector<HTMLElement>('#network-status-label')
+  const networkStatuses = document.querySelectorAll<HTMLElement>('.network-status')
   let networkCheck: number | undefined
 
   const showNetworkState = (state: 'connected' | 'connecting' | 'disconnected') => {
-    if (!networkStatus || !networkLabel) return
-    networkStatus.dataset.state = state
-    networkLabel.textContent = state === 'connected'
-      ? 'Connected'
-      : state === 'connecting'
-        ? 'Connecting…'
-        : 'Disconnected'
+    networkStatuses.forEach((networkStatus) => {
+      networkStatus.dataset.state = state
+      const networkLabel = networkStatus.querySelector<HTMLElement>('#network-status-label, .network-status__label')
+      if (networkLabel) networkLabel.textContent = state === 'connected'
+        ? 'Connected'
+        : state === 'connecting'
+          ? 'Connecting…'
+          : 'Disconnected'
+    })
   }
 
   const verifyConnection = async () => {

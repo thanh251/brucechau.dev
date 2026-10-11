@@ -11,22 +11,47 @@ interface Props {
 }
 
 const { active = Astro.url.pathname, filename = 'README.md' } = Astro.props
+const isActive = (href: string) => href === '/' ? active === '/' : active === href || active.startsWith(`${href}/`)
 ---
 
-<div class="desktop-frame">
+<div class="desktop-frame exhibition-shell" data-home={active === '/'} data-filename={filename}>
   <header class="titlebar">
     <button class="icon-button mobile-only" type="button" data-toggle-sidebar aria-label="Open navigation menu" aria-controls="site-sidebar" aria-expanded="false"><Icon name="panel" /></button>
-    <a class="titlebar__path" href="/">BRUCE.CHAU <span>/</span> {filename}</a>
+    <a class="titlebar__path" href="/">Bruce Chau</a>
+    <nav class="top-nav" aria-label="Site navigation">
+      <a class:list={[{ active: isActive('/') }]} href="/">Home</a>
+      <details class="top-nav__group">
+        <summary class:list={[{ active: isActive('/blogs') }]}>Blogs <Icon name="chevron" size={12} /></summary>
+        <div class="top-nav__menu">
+          <a href="/blogs">All writing</a>
+          <a href="/blogs/tech">tech</a>
+          <a href="/blogs/health">health</a>
+          <a href="/blogs/ideas">ideas</a>
+        </div>
+      </details>
+      <a class:list={[{ active: isActive('/favorites') }]} href="/favorites">Favorites</a>
+      <details class="top-nav__group">
+        <summary class:list={[{ active: isActive('/about') }]}>About <Icon name="chevron" size={12} /></summary>
+        <div class="top-nav__menu">
+          <a href="/about/whoami">whoami</a>
+          <a href="/about/uses">uses</a>
+          <a href="/about/inspiration">inspiration</a>
+          <a href="/about/collections">collections</a>
+          <a href="/about/setup">setup</a>
+        </div>
+      </details>
+      <a class:list={[{ active: isActive('/projects') }]} href="/projects">Projects</a>
+      <a class:list={[{ active: isActive('/calendar') }]} href="/calendar">Calendar</a>
+    </nav>
     <div class="titlebar__actions">
-      <button class="search-button" type="button" data-open-search aria-label="Search this site"><Icon name="search" /><span>Search…</span><kbd>⌘ K</kbd></button>
+      <button class="search-button" type="button" data-open-search aria-label="Search this site"><Icon name="search" /></button>
       <ThemeToggle />
-      <button class="icon-button" type="button" data-toggle-rail aria-label="Toggle right sidebar" aria-controls="right-rail" aria-expanded="true"><Icon name="panel" /></button>
+      <button class="icon-button rail-toggle" type="button" data-toggle-rail aria-label="Toggle right sidebar" aria-controls="right-rail" aria-expanded="true"><Icon name="panel" /></button>
     </div>
   </header>
   <SearchPalette />
   <Sidebar active={active} />
   <main class="main-pane">
-    <div class="tabbar"><span class="active-tab"><Icon name="file" /> {filename}</span><span class="motto">Write&nbsp; / &nbsp;Build&nbsp; / &nbsp;Learn&nbsp; / &nbsp;Repeat</span></div>
     <div class="page-scroll"><slot /></div>
   </main>
   <RightRail />
@@ -94,6 +119,7 @@ const { active = Astro.url.pathname, filename = 'README.md' } = Astro.props
     }
     const collapsed = frame?.classList.toggle('rail-collapsed') ?? false
     railToggle.setAttribute('aria-expanded', String(!collapsed))
+    railToggle.setAttribute('aria-label', collapsed ? 'Show status panel' : 'Hide status panel')
     localStorage.setItem('rightRailCollapsed', String(collapsed))
   })
   sidebarToggle?.addEventListener('click', () => {
@@ -114,7 +140,10 @@ const { active = Astro.url.pathname, filename = 'README.md' } = Astro.props
   })
   const railCollapsed = localStorage.getItem('rightRailCollapsed') === 'true'
   if (railCollapsed) frame?.classList.add('rail-collapsed')
-  railToggle?.setAttribute('aria-expanded', String(!railCollapsed))
   setSidebarOpen(false)
   setRailOpen(false)
+  if (!drawerQuery.matches) {
+    railToggle?.setAttribute('aria-expanded', String(!railCollapsed))
+    railToggle?.setAttribute('aria-label', railCollapsed ? 'Show status panel' : 'Hide status panel')
+  }
 </script>

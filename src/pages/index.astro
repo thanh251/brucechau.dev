@@ -16,41 +16,38 @@ const formatDate = (date: Date) => date.toLocaleDateString('en-US', { month: 'sh
   <StudioShell active="/" filename="README.md">
     <div class="home">
       <section class="hero">
-        <p class="prompt">$ hello, world</p>
-        <h1>I’m Bruce Chau<span class="cursor" aria-hidden="true"></span></h1>
+        <div class="hero__index" aria-hidden="true"><span>01</span><i></i></div>
+        <h1>Bruce Chau</h1>
         <p class="hero__lede">Developer, builder, and lifelong learner.<br />I write about software, health, and unfinished ideas.</p>
+        <p class="now-line">Studying at PTIT · Building with Weaverse</p>
         <SocialLinks />
-        <div class="now-line">
-          <strong>NOW</strong>
-          <span>Studying at PTIT · Building with Weaverse</span>
-          <time datetime="2026-09">SEP 2026</time>
-        </div>
       </section>
 
       <section class="home-section">
-        <SectionHeader title="FEATURED WRITING" href="/blogs" />
+        <SectionHeader index="02" title="Featured Writing" href="/blogs" />
         <div class="post-list">
-          {featuredPosts.map((post) => (
+          {featuredPosts.map((post, index) => (
             <a class="post-row" href={`/blog/${post.id}`}>
-              <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
+              <span class="post-row__index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
               <strong>{post.data.title}</strong>
               <span>{post.data.category}</span>
+              <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
             </a>
           ))}
         </div>
       </section>
 
       <section class="home-section">
-        <SectionHeader title="SELECTED PROJECTS" href="/projects" />
+        <SectionHeader index="03" title="Selected Projects" href="/projects" />
         <div class="project-list">
           <a class="project-item" href="/projects">
-            <span>01 / PERSONAL</span>
+            <span>01</span>
             <h3>brucechau.dev</h3>
             <p>A quiet corner of the internet for notes, experiments, and things worth remembering.</p>
             <small>Astro · React · MDX</small>
           </a>
           <a class="project-item" href="/projects">
-            <span>02 / IN PROGRESS</span>
+            <span>02</span>
             <h3>Small useful tools</h3>
             <p>Exploring products that remove friction from learning, building, and everyday work.</p>
             <small>TypeScript · Product craft</small>

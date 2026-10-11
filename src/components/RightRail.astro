@@ -4,13 +4,8 @@ import WeatherWidget from './WeatherWidget.astro'
 ---
 
 <aside class="right-rail" id="right-rail" aria-label="Current status">
-  <div class="right-rail__heading">
-    <span><Icon name="file" /> NOW</span>
-    <Icon name="chevron" size={13} />
-    <button class="right-rail__close" type="button" data-close-rail aria-label="Close status panel"><Icon name="close" /></button>
-  </div>
+  <button class="right-rail__close" type="button" data-close-rail aria-label="Close status panel"><Icon name="close" /></button>
   <div class="rail-item">
-    <Icon name="clock" size={19} />
     <div>
       <strong>Local time</strong>
       <span class="local-time" id="local-time">
@@ -21,6 +16,10 @@ import WeatherWidget from './WeatherWidget.astro'
     </div>
   </div>
   <WeatherWidget />
+  <div class="network-status" data-state="connecting" role="status" aria-live="polite">
+    <span class="network-status__dot" aria-hidden="true"></span>
+    <span class="network-status__label">Connecting…</span>
+  </div>
 </aside>
 
 <script>
