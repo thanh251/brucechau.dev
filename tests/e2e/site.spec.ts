@@ -45,6 +45,26 @@ test('gallery layout fits mobile and the career range stays clear of events', as
   expect(range!.y + range!.height).toBeLessThan(firstEvent!.y)
 })
 
+test('neo-cubist hero leaves room for status and career path remains vertical', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/')
+
+  const heading = await page.getByRole('heading', { name: 'Bruce Chau' }).boundingBox()
+  const status = await page.locator('#right-rail').boundingBox()
+  const axis = await page.locator('.career__axis').boundingBox()
+  const events = await page.locator('.career-event').all()
+  expect(heading).not.toBeNull()
+  expect(status).not.toBeNull()
+  expect(axis).not.toBeNull()
+  expect(heading!.x + heading!.width).toBeLessThan(status!.x)
+  expect(axis!.height).toBeGreaterThan(200)
+  expect(axis!.width).toBeLessThan(4)
+  expect((await events[0].boundingBox())!.y).toBeLessThan((await events[1].boundingBox())!.y)
+
+  await page.setViewportSize({ width: 375, height: 812 })
+  await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375)
+})
+
 test('theme switch works in both directions', async ({ page }) => {
   await page.goto('/')
 
