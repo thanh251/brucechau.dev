@@ -45,6 +45,21 @@ test('gallery layout fits mobile and the career range stays clear of events', as
   expect(range!.y + range!.height).toBeLessThan(firstEvent!.y)
 })
 
+test('main pages fit a narrow 320px viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 812 })
+
+  for (const path of [
+    '/', '/blogs', '/blogs/tech', '/blog/building-this-personal-blog',
+    '/projects', '/favorites', '/about/whoami', '/about/uses', '/calendar',
+  ]) {
+    await page.goto(path)
+    await expect.poll(
+      () => page.evaluate(() => document.documentElement.scrollWidth),
+      { message: `Horizontal overflow on ${path}` },
+    ).toBeLessThanOrEqual(320)
+  }
+})
+
 test('neo-cubist hero leaves room for status and career path remains vertical', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 })
   await page.goto('/')

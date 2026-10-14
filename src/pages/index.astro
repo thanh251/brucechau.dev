@@ -20,7 +20,7 @@ const name = 'Bruce Chau'
         <span class="hero__edge" aria-hidden="true"></span>
         <div class="hero__content">
           <div class="hero__index" aria-hidden="true"><span>01</span><i></i></div>
-          <h1 aria-label={name}>{Array.from(name).map((letter, index) => letter === ' ' ? <span class="hero__name-space" aria-hidden="true"> </span> : <span class="hero__name-letter" data-letter={index} aria-hidden="true">{letter}</span>)}</h1>
+          <h1 aria-label={name}>{Array.from(name).map((letter, index) => letter === ' ' ? <span class="hero__name-space" aria-hidden="true"> </span> : <span class:list={['hero__name-letter', { 'hero__name-letter--chau': index >= 6 }]} data-letter={index} aria-hidden="true">{index === 8 ? 'A' : letter}</span>)}</h1>
           <p class="hero__lede">Developer, builder, and lifelong learner.<br />I write about software, health, and unfinished ideas.</p>
           <p class="now-line">Studying at PTIT · Building with Weaverse</p>
           <SocialLinks />
