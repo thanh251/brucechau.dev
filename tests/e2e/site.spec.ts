@@ -80,6 +80,23 @@ test('neo-cubist hero leaves room for status and career path remains vertical', 
   await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375)
 })
 
+test('Chau lettering keeps the reference proportions and yellow A counter', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/')
+
+  const c = page.locator('.hero__name-letter[data-letter="6"]')
+  const a = page.locator('.hero__name-letter[data-letter="8"]')
+  const cBox = await c.boundingBox()
+  const aBox = await a.boundingBox()
+
+  expect(cBox).not.toBeNull()
+  expect(aBox).not.toBeNull()
+  expect(aBox!.y).toBeGreaterThan(cBox!.y + 20)
+  expect(Math.abs(aBox!.y + aBox!.height - cBox!.y - cBox!.height)).toBeLessThan(6)
+  expect(await c.evaluate((element) => getComputedStyle(element, '::after').display)).toBe('none')
+  expect(await a.evaluate((element) => getComputedStyle(element, '::after').backgroundColor)).toBe('rgb(248, 211, 41)')
+})
+
 test('theme switch works in both directions', async ({ page }) => {
   await page.goto('/')
 

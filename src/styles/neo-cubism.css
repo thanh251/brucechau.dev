@@ -154,7 +154,13 @@
 }
 .hero__name-letter { position: relative; display: inline-block; }
 .hero__name-letter:nth-of-type(2n) { transform: skewX(-1.5deg); }
-.hero__name-letter--chau { font-family: Arial, Helvetica, sans-serif; font-weight: 700; letter-spacing: -.085em; }
+.hero__name-letter--chau {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 400;
+  letter-spacing: -.015em;
+  transform: none !important;
+}
+.hero__name-letter--chau[data-letter="8"] { font-size: .75em; font-weight: 700; }
 .hero__name-space { display: inline-block; flex: 0 0 .2em; }
 .hero__name-letter[data-letter="0"]::after,
 .hero__name-letter[data-letter="6"]::after,
@@ -168,12 +174,12 @@
   pointer-events: none;
 }
 .hero__name-letter[data-letter="0"]::after { top: .13em; left: .27em; background: var(--cubist-red); }
-.hero__name-letter[data-letter="6"]::after { top: .07em; left: .14em; background: var(--blue); }
+.hero__name-letter[data-letter="6"]::after { display: none; }
 .hero__name-letter[data-letter="8"]::after {
-  top: .35em;
-  left: .27em;
-  width: .28em;
-  height: .19em;
+  top: .38em;
+  left: .17em;
+  width: .36em;
+  height: .25em;
   background: var(--cubist-yellow);
   clip-path: polygon(50% 0, 100% 100%, 0 100%);
 }
