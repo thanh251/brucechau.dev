@@ -204,21 +204,24 @@
 }
 .now-line { margin-top: 9px; font-size: clamp(16px, 1.5vw, 21px); }
 .social-links {
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  justify-content: stretch;
   gap: 0;
   margin-top: 26px;
   border-bottom: 2px solid var(--ink);
   padding-bottom: 15px;
 }
 .social-link {
+  width: 100%;
+  justify-content: center;
   gap: 12px;
   color: var(--ink);
   font-family: var(--sans);
   font-size: 17px;
   font-weight: 500;
 }
-.social-link + .social-link { border-left: 1px solid var(--ink); padding-left: clamp(20px, 5vw, 75px); }
-.social-link::after { content: '↗'; margin-left: 4px; font-size: 18px; }
+.social-link + .social-link { border-left: 1px solid var(--ink); padding-left: 0; }
 
 .home-section,
 .career {
@@ -427,10 +430,8 @@
   .hero::after { width: 48px; height: 130px; }
   .hero__edge { right: -10px; width: 43px; height: 110px; }
   .hero__content::after { display: none; }
-  .social-links { justify-content: center; gap: 12px; margin-top: 32px; padding-bottom: 13px; }
+  .social-links { gap: 0; margin-top: 32px; padding-bottom: 13px; }
   .social-link { gap: 5px; font-size: 12px; }
-  .social-link + .social-link { padding-left: 12px; }
-  .social-link::after { display: none; }
   .home-section,
   .career { display: block; min-height: 0; padding: 26px 24px 35px; }
   .home-section::before,

@@ -44,7 +44,6 @@ const searchItems = [
           data-search-text={`${item.title} ${item.detail}`.toLocaleLowerCase()}
         >
           <span><strong>{item.title}</strong><small>{item.detail}</small></span>
-          <span aria-hidden="true">↗</span>
         </a>
       ))}
       <p class="search-palette__empty" id="site-search-empty" hidden>No matching page found.</p>

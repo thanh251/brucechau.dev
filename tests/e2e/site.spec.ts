@@ -21,6 +21,29 @@ test('homepage exposes the configured social profiles', async ({ page }) => {
   )
 })
 
+test('social platforms are centered in equal columns without diagonal link arrows', async ({ page }) => {
+  for (const width of [1440, 375, 320]) {
+    await page.setViewportSize({ width, height: 900 })
+    await page.goto('/')
+
+    const profiles = page.getByLabel('Social profiles')
+    const links = profiles.getByRole('link')
+    const row = await profiles.boundingBox()
+    expect(row).not.toBeNull()
+    await expect(links).toHaveCount(3)
+
+    for (let index = 0; index < 3; index += 1) {
+      const box = await links.nth(index).boundingBox()
+      expect(box).not.toBeNull()
+      expect(Math.abs(box!.x + box!.width / 2 - (row!.x + row!.width * (index + .5) / 3))).toBeLessThan(2)
+      expect(await links.nth(index).evaluate((element) => getComputedStyle(element, '::after').content)).toBe('none')
+    }
+  }
+
+  await page.getByRole('button', { name: 'Search this site' }).click()
+  expect(await page.locator('.search-result').first().textContent()).not.toContain('↗')
+})
+
 test('BRU branding appears in the navbar and share metadata', async ({ page }) => {
   await page.goto('/')
 
