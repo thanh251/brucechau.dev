@@ -14,7 +14,7 @@ interface Props {
 const {
   title = SITE.title,
   description = SITE.description,
-  image = '/social-card.png',
+  image = '/social-card.png?v=bru-icon',
   type = 'website',
 } = Astro.props
 const canonical = new URL(Astro.url.pathname, SITE.url)
@@ -31,8 +31,8 @@ const umamiScript = import.meta.env.PUBLIC_UMAMI_SCRIPT_URL ?? 'https://analytic
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#fbfaf7" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=bru-wordmark" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=bru-wordmark" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=bru-icon" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=bru-icon" />
     <link rel="canonical" href={canonical} />
     <link rel="alternate" type="application/rss+xml" title={`${SITE.name} RSS`} href="/feed.xml" />
     <meta property="og:title" content={title} />
@@ -43,7 +43,7 @@ const umamiScript = import.meta.env.PUBLIC_UMAMI_SCRIPT_URL ?? 'https://analytic
     <meta property="og:image" content={socialImage} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={socialImage} />
-    <meta name="twitter:image:alt" content="BRU monogram — Bruce Chau" />
+    <meta name="twitter:image:alt" content="Circular B icon — Bruce Chau" />
     <title>{title}</title>
     <script is:inline>
       (() => {

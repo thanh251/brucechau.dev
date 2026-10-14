@@ -48,27 +48,27 @@ test('BRU branding appears in the navbar and share metadata', async ({ page }) =
   await page.goto('/')
 
   const brand = page.getByRole('link', { name: 'Bruce Chau home' })
-  const lightLogo = brand.locator('.brand-logo--light')
-  const darkLogo = brand.locator('.brand-logo--dark')
-  await expect(lightLogo).toBeVisible()
-  await expect(darkLogo).toBeHidden()
-  await expect(page.locator('link[rel="icon"]')).toHaveAttribute('href', '/favicon.svg?v=bru-wordmark')
+  const mark = brand.locator('svg.brand-mark')
+  await expect(mark).toBeVisible()
+  await expect(brand.locator('.brand-word')).toHaveText('BRU')
+  await expect(brand.locator('img')).toHaveCount(0)
+  await expect(page.locator('link[rel="icon"]')).toHaveAttribute('href', '/favicon.svg?v=bru-icon')
   await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
-    'content', 'https://brucechau.pages.dev/social-card.png',
+    'content', 'https://brucechau.pages.dev/social-card.png?v=bru-icon',
   )
   await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute(
-    'content', 'https://brucechau.pages.dev/social-card.png',
+    'content', 'https://brucechau.pages.dev/social-card.png?v=bru-icon',
   )
 
   await page.locator('[data-theme-toggle]').click()
-  await expect(lightLogo).toBeHidden()
-  await expect(darkLogo).toBeVisible()
+  await expect(mark).toBeVisible()
+  await expect(brand.locator('.brand-word')).toHaveCSS('color', 'rgb(245, 242, 234)')
 
   expect((await page.request.get('/social-card.png')).ok()).toBe(true)
   expect((await page.request.get('/apple-touch-icon.png')).ok()).toBe(true)
   const favicon = await page.request.get('/favicon.svg')
   expect(favicon.ok()).toBe(true)
-  expect(await favicon.text()).toContain('BRU</text>')
+  expect(await favicon.text()).toContain('Circular B icon')
 })
 
 test('calendar exposes the Google Calendar booking link', async ({ page }) => {

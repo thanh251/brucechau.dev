@@ -45,15 +45,23 @@
 .exhibition-shell .titlebar__path {
   display: inline-flex;
   align-items: center;
-  font-family: var(--sans);
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: -.05em;
+  gap: 3px;
 }
-.brand-logo { display: block; width: auto; height: 42px; }
-.brand-logo--dark,
-:root[data-theme="dark"] .brand-logo--light { display: none; }
-:root[data-theme="dark"] .brand-logo--dark { display: block; }
+.brand-mark { display: block; width: 42px; height: 42px; flex: 0 0 auto; }
+.exhibition-shell .brand-word {
+  position: relative;
+  display: block;
+  margin: 0;
+  border-left: 1px solid var(--ink);
+  padding-left: 7px;
+  color: var(--ink);
+  font-family: Arial Black, Arial, Helvetica, sans-serif;
+  font-size: 27px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -.095em;
+}
+.exhibition-shell .brand-word::after { position: absolute; right: 0; bottom: -4px; left: 7px; height: 1px; background: var(--ink); content: ''; }
 .top-nav > a,
 .top-nav summary {
   border-bottom-width: 3px;
@@ -419,7 +427,8 @@
 @media (max-width: 760px) {
   .exhibition-shell .titlebar { height: 62px; padding-inline: 18px; }
   .exhibition-shell .titlebar__path { font-size: 19px; }
-  .brand-logo { height: 34px; }
+  .brand-mark { width: 36px; height: 36px; }
+  .exhibition-shell .brand-word { font-size: 23px; }
   .exhibition-shell[data-home="true"] .right-rail { top: 62px; }
   .home { padding: 0 0 80px; }
   .hero { min-height: 0; padding: 72px 24px 48px; }

@@ -1,5 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="BRU wordmark">
-  <rect x="2" y="2" width="60" height="60" rx="12" fill="#101010" stroke="#fffefa" stroke-width="4"/>
-  <text x="32" y="39" text-anchor="middle" fill="#fffefa" font-family="Arial Black, Arial, Helvetica, sans-serif" font-size="23" font-weight="900" letter-spacing="-2">BRU</text>
-  <path d="M12 46h40" stroke="#f8d329" stroke-width="3"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 260" role="img" aria-label="Circular B icon">
+  <rect width="260" height="260" fill="#171716"/>
+  <path d="M205 64A99 99 0 1 0 226 123" fill="none" stroke="#f5f2ea" stroke-width="14" stroke-linecap="square"/>
+  <path d="M217 82 229 108 205 108Z" fill="#7ca4ff"/>
+  <path d="M81 63H141C170 63 184 76 184 97C184 113 176 123 161 129C180 134 191 147 191 165C191 188 173 200 142 200H81ZM110 88V117H137C148 117 154 112 154 102S148 88 137 88ZM110 143V175H139C153 175 160 169 160 159S153 143 139 143Z" fill="#f5f2ea" fill-rule="evenodd"/>
+  <path d="m123 171 14-22 14 22Z" fill="#efd052"/>
 </svg>
