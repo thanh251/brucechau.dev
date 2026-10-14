@@ -17,7 +17,10 @@ const isActive = (href: string) => href === '/' ? active === '/' : active === hr
 <div class="desktop-frame exhibition-shell" data-home={active === '/'} data-filename={filename}>
   <header class="titlebar">
     <button class="icon-button mobile-only" type="button" data-toggle-sidebar aria-label="Open navigation menu" aria-controls="site-sidebar" aria-expanded="false"><Icon name="panel" /></button>
-    <a class="titlebar__path" href="/">Bruce Chau</a>
+    <a class="titlebar__path" href="/" aria-label="Bruce Chau home">
+      <img class="brand-logo brand-logo--light" src="/brand/bru-logo.svg" alt="" width="920" height="260" />
+      <img class="brand-logo brand-logo--dark" src="/brand/bru-logo-dark.svg" alt="" width="920" height="260" />
+    </a>
     <nav class="top-nav" aria-label="Site navigation">
       <a class:list={[{ active: isActive('/') }]} href="/">Home</a>
       <details class="top-nav__group">

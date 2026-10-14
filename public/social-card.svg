@@ -1,9 +1,23 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
-  <title id="title">Bruce Chau</title><desc id="desc">Developer, builder, and lifelong learner.</desc>
-  <rect width="1200" height="630" fill="#0a0b0d"/><rect x="70" y="60" width="1060" height="510" rx="24" fill="#111214" stroke="#2a3038" stroke-width="2"/>
-  <circle cx="112" cy="102" r="8" fill="#ff5f57"/><circle cx="138" cy="102" r="8" fill="#febc2e"/><circle cx="164" cy="102" r="8" fill="#28c840"/>
-  <text x="118" y="225" fill="#55df72" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24">$ hello, world</text>
-  <text x="118" y="330" fill="#f3f4f6" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="74" font-weight="700">I’m Bruce Chau_</text>
-  <text x="118" y="398" fill="#98a0ad" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="31">Developer, builder, and lifelong learner.</text>
-  <text x="118" y="505" fill="#667080" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20">ASTRO · REACT ISLANDS · MDX · CLOUDFLARE PAGES</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title description">
+  <title id="title">BRU — Bruce Chau</title>
+  <desc id="description">Bruce Chau's personal site, represented by the BRU monogram.</desc>
+  <rect width="1200" height="630" fill="#fffefa"/>
+  <path d="M0 0h92L0 180Z" fill="#e83b34"/>
+  <path d="M1080 0h120v242l-176 94Z" fill="#1259e8"/>
+  <path d="M0 554 56 630H0Z" fill="#f8d329"/>
+  <path d="M0 4h1200M0 626h1200" stroke="#101010" stroke-width="8"/>
+
+  <g transform="translate(28 124) scale(1.55)">
+    <path d="M205 64A99 99 0 1 0 226 123" fill="none" stroke="#101010" stroke-width="14" stroke-linecap="square"/>
+    <path d="M217 82 229 108 205 108Z" fill="#1259e8"/>
+    <path d="M81 63H141C170 63 184 76 184 97C184 113 176 123 161 129C180 134 191 147 191 165C191 188 173 200 142 200H81ZM110 88V117H137C148 117 154 112 154 102S148 88 137 88ZM110 143V175H139C153 175 160 169 160 159S153 143 139 143Z" fill="#101010" fill-rule="evenodd"/>
+    <path d="m123 171 14-22 14 22Z" fill="#f8d329"/>
+  </g>
+
+  <path d="M465 134v360" stroke="#101010" stroke-width="3"/>
+  <text x="515" y="300" fill="#101010" font-family="Arial Black, Arial, Helvetica, sans-serif" font-size="154" font-weight="900" letter-spacing="-12">BRU</text>
+  <text x="522" y="390" fill="#101010" font-family="Georgia, Times New Roman, serif" font-size="62" font-weight="700">Bruce Chau</text>
+  <text x="524" y="445" fill="#4c4b49" font-family="Arial, Helvetica, sans-serif" font-size="27">Developer, builder, lifelong learner.</text>
+  <path d="M522 485h530" stroke="#101010" stroke-width="3"/>
+  <path d="m1040 479 23 6-23 6Z" fill="#e83b34"/>
 </svg>

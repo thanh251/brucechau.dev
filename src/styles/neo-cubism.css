@@ -43,11 +43,17 @@
   padding-inline: clamp(24px, 4.2vw, 66px);
 }
 .exhibition-shell .titlebar__path {
+  display: inline-flex;
+  align-items: center;
   font-family: var(--sans);
   font-size: 24px;
   font-weight: 700;
   letter-spacing: -.05em;
 }
+.brand-logo { display: block; width: auto; height: 42px; }
+.brand-logo--dark,
+:root[data-theme="dark"] .brand-logo--light { display: none; }
+:root[data-theme="dark"] .brand-logo--dark { display: block; }
 .top-nav > a,
 .top-nav summary {
   border-bottom-width: 3px;
@@ -410,6 +416,7 @@
 @media (max-width: 760px) {
   .exhibition-shell .titlebar { height: 62px; padding-inline: 18px; }
   .exhibition-shell .titlebar__path { font-size: 19px; }
+  .brand-logo { height: 34px; }
   .exhibition-shell[data-home="true"] .right-rail { top: 62px; }
   .home { padding: 0 0 80px; }
   .hero { min-height: 0; padding: 72px 24px 48px; }

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 260" role="img" aria-labelledby="title description">
+  <title id="title">BRU — Bruce Chau</title>
+  <desc id="description">Circular B monogram and bold BRU wordmark for dark backgrounds.</desc>
+  <path d="M205 64A99 99 0 1 0 226 123" fill="none" stroke="#f5f2ea" stroke-width="14" stroke-linecap="square"/>
+  <path d="M217 82 229 108 205 108Z" fill="#7ca4ff"/>
+  <path d="M81 63H141C170 63 184 76 184 97C184 113 176 123 161 129C180 134 191 147 191 165C191 188 173 200 142 200H81ZM110 88V117H137C148 117 154 112 154 102S148 88 137 88ZM110 143V175H139C153 175 160 169 160 159S153 143 139 143Z" fill="#f5f2ea" fill-rule="evenodd"/>
+  <path d="m123 171 14-22 14 22Z" fill="#efd052"/>
+  <path d="M268 49v164" stroke="#f5f2ea" stroke-width="3"/>
+  <text x="301" y="190" fill="#f5f2ea" font-family="Arial Black, Arial, Helvetica, sans-serif" font-size="164" font-weight="900" letter-spacing="-12">BRU</text>
+  <path d="M316 219h471" stroke="#f5f2ea" stroke-width="3"/>
+  <path d="m774 214 18 5-18 5Z" fill="#ef6256"/>
+</svg>
