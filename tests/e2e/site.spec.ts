@@ -97,6 +97,28 @@ test('Chau lettering keeps the reference proportions and yellow A counter', asyn
   expect(await a.evaluate((element) => getComputedStyle(element, '::after').backgroundColor)).toBe('rgb(248, 211, 41)')
 })
 
+test('hero and desktop navigation are centered without covering the status panel', async ({ page }) => {
+  for (const width of [1440, 768, 375]) {
+    await page.setViewportSize({ width, height: 900 })
+    await page.goto('/')
+
+    const heading = await page.getByRole('heading', { name: 'Bruce Chau' }).boundingBox()
+    expect(heading).not.toBeNull()
+    expect(Math.abs(heading!.x + heading!.width / 2 - width / 2)).toBeLessThan(2)
+
+    if (width === 1440) {
+      const nav = await page.getByRole('navigation', { name: 'Site navigation' }).boundingBox()
+      const social = await page.getByLabel('Social profiles').boundingBox()
+      const status = await page.locator('#right-rail').boundingBox()
+      expect(nav).not.toBeNull()
+      expect(social).not.toBeNull()
+      expect(status).not.toBeNull()
+      expect(Math.abs(nav!.x + nav!.width / 2 - width / 2)).toBeLessThan(2)
+      expect(social!.x + social!.width).toBeLessThan(status!.x)
+    }
+  }
+})
+
 test('theme switch works in both directions', async ({ page }) => {
   await page.goto('/')
 

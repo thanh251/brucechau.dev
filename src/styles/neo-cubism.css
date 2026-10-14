@@ -57,6 +57,7 @@
 .top-nav > a:hover,
 .top-nav summary:hover,
 .top-nav .active { border-bottom-color: var(--cubist-yellow); }
+.exhibition-shell .top-nav { position: absolute; left: 50%; transform: translateX(-50%); }
 .top-nav__menu { border: 2px solid var(--ink); box-shadow: none; }
 .exhibition-shell .titlebar__actions { gap: 17px; }
 .exhibition-shell .page-scroll { min-height: calc(100vh - 72px); }
@@ -136,14 +137,21 @@
   transform: rotate(-18deg);
   clip-path: polygon(0 0, 100% 21%, 90% 100%, 20% 85%);
 }
-.hero__content { position: relative; z-index: 1; width: min(970px, calc(100vw - 32rem)); max-width: 100%; }
+.hero__content {
+  position: relative;
+  z-index: 1;
+  width: min(820px, calc(100vw - 32rem));
+  max-width: 100%;
+  margin-inline: auto;
+  text-align: center;
+}
 .hero__index { display: none; }
 .hero h1 {
   display: flex;
   align-items: baseline;
   width: max-content;
   max-width: 100%;
-  margin: 0;
+  margin: 0 auto;
   color: var(--ink);
   font-family: var(--serif);
   font-size: clamp(70px, 10vw, 150px);
