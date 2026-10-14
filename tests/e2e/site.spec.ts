@@ -83,18 +83,19 @@ test('calendar exposes the Google Calendar booking link', async ({ page }) => {
   )
 })
 
-test('gallery layout fits mobile and the career range stays clear of events', async ({ page }) => {
+test('gallery layout fits mobile and the career range stays inside its detail card', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 })
   await page.goto('/')
 
   await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375)
   await expect(page.getByRole('heading', { name: 'Bruce Chau' })).toBeVisible()
 
-  const range = await page.locator('.career__bracket span').boundingBox()
-  const firstEvent = await page.locator('.career-event').first().boundingBox()
+  const range = await page.locator('.career-entry--ptit .career-entry__range-label').boundingBox()
+  const detail = await page.locator('.career-entry--ptit .career-entry__detail').boundingBox()
   expect(range).not.toBeNull()
-  expect(firstEvent).not.toBeNull()
-  expect(range!.y + range!.height).toBeLessThan(firstEvent!.y)
+  expect(detail).not.toBeNull()
+  expect(range!.x).toBeGreaterThanOrEqual(detail!.x)
+  expect(range!.x + range!.width).toBeLessThanOrEqual(detail!.x + detail!.width)
 })
 
 test('main pages fit a narrow 320px viewport', async ({ page }) => {
@@ -117,11 +118,12 @@ test('neo-cubist hero is centered and career path remains vertical', async ({ pa
   await page.goto('/')
 
   const heading = await page.getByRole('heading', { name: 'Bruce Chau' }).boundingBox()
-  const axis = await page.locator('.career__axis').boundingBox()
-  const events = await page.locator('.career-event').all()
+  const axis = await page.locator('.career-timeline__axis').boundingBox()
+  const events = await page.locator('.career-entry__event').all()
   expect(heading).not.toBeNull()
   expect(axis).not.toBeNull()
   expect(Math.abs(heading!.x + heading!.width / 2 - 720)).toBeLessThan(2)
+  expect(Math.abs(axis!.x + axis!.width / 2 - 720)).toBeLessThan(2)
   expect(axis!.height).toBeGreaterThan(200)
   expect(axis!.width).toBeLessThan(4)
   expect((await events[0].boundingBox())!.y).toBeLessThan((await events[1].boundingBox())!.y)
@@ -241,4 +243,59 @@ test('mobile can open, close, and navigate with the left sidebar', async ({ page
   await sidebar.getByRole('link', { name: 'tech' }).click()
   await expect(page).toHaveURL(/\/blogs\/tech\/?$/)
   await expect(sidebar).not.toBeInViewport()
+})
+
+test('career timeline stays centered and opens each chapter opposite its event at every breakpoint', async ({ page }) => {
+  for (const width of [320, 375, 768, 1024, 1440]) {
+    await page.setViewportSize({ width, height: 900 })
+    await page.goto('/')
+    await page.locator('.career').scrollIntoViewIfNeeded()
+
+    const header = await page.locator('.career__header').boundingBox()
+    const axis = await page.locator('.career-timeline__axis').boundingBox()
+    expect(header).not.toBeNull()
+    expect(axis).not.toBeNull()
+    expect(Math.abs(header!.x + header!.width / 2 - width / 2)).toBeLessThan(2)
+    expect(Math.abs(axis!.x + axis!.width / 2 - width / 2)).toBeLessThan(2)
+
+    for (const id of ['ptit', 'weaverse'] as const) {
+      await page.locator(`.career-entry--${id} .career-entry__event`).click()
+      const entry = page.locator(`.career-entry--${id}`)
+      const event = await entry.locator('.career-entry__event').boundingBox()
+      const detail = await entry.locator('.career-entry__detail').boundingBox()
+      const node = await entry.locator('.career-entry__node').boundingBox()
+      const rangeLabel = await entry.locator('.career-entry__range-label').boundingBox()
+      const otherId = id === 'ptit' ? 'weaverse' : 'ptit'
+      const otherEntry = await page.locator(`.career-entry--${otherId}`).boundingBox()
+      expect(event).not.toBeNull()
+      expect(detail).not.toBeNull()
+      expect(node).not.toBeNull()
+      expect(rangeLabel).not.toBeNull()
+      expect(otherEntry).not.toBeNull()
+      await expect(page.locator(`.career-entry--${otherId} .career-entry__detail`)).toHaveCount(0)
+
+      if (id === 'ptit') {
+        expect(detail!.x + detail!.width).toBeLessThan(node!.x)
+        expect(event!.x).toBeGreaterThan(node!.x + node!.width)
+        expect(otherEntry!.y + otherEntry!.height).toBeLessThan(event!.y)
+      } else {
+        expect(event!.x + event!.width).toBeLessThan(node!.x)
+        expect(detail!.x).toBeGreaterThan(node!.x + node!.width)
+        expect(detail!.y + detail!.height).toBeLessThan(otherEntry!.y)
+      }
+      expect(detail!.x).toBeGreaterThanOrEqual(0)
+      expect(detail!.x + detail!.width).toBeLessThanOrEqual(width)
+      expect(rangeLabel!.x).toBeGreaterThanOrEqual(detail!.x)
+      expect(rangeLabel!.x + rangeLabel!.width).toBeLessThanOrEqual(detail!.x + detail!.width)
+      await expect.poll(async () => {
+        const now = await page.locator('[data-career-now-node]').boundingBox()
+        const selectedNode = await entry.locator('.career-entry__node').boundingBox()
+        const bracket = await page.locator('.career-timeline__range').boundingBox()
+        if (!now || !selectedNode || !bracket) return false
+        return Math.abs(bracket.y - (now.y + now.height / 2)) < 2
+          && Math.abs(bracket.y + bracket.height - (selectedNode.y + selectedNode.height / 2)) < 2
+      }).toBe(true)
+      await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width)
+    }
+  }
 })
