@@ -1,8 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title description">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 260 260" role="img" aria-labelledby="title description">
   <title id="title">Bruce Chau — circular B icon</title>
   <desc id="description">Cream B and circular arc on a charcoal background, with blue and yellow triangular accents.</desc>
-  <rect width="1200" height="630" fill="#171716"/>
-  <g transform="translate(353 68) scale(1.9)">
+  <circle cx="130" cy="130" r="130" fill="#171716"/>
+  <g>
     <path d="M205 64A99 99 0 1 0 226 123" fill="none" stroke="#f5f2ea" stroke-width="14" stroke-linecap="square"/>
     <path d="M217 82 229 108 205 108Z" fill="#7ca4ff"/>
     <path d="M81 63H141C170 63 184 76 184 97C184 113 176 123 161 129C180 134 191 147 191 165C191 188 173 200 142 200H81ZM110 88V117H137C148 117 154 112 154 102S148 88 137 88ZM110 143V175H139C153 175 160 169 160 159S153 143 139 143Z" fill="#f5f2ea" fill-rule="evenodd"/>

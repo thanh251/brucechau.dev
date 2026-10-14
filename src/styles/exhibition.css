@@ -131,54 +131,11 @@ body { font-family: var(--serif); font-size: 17px; }
 :root[data-theme="dark"] .theme-toggle__light { display: none; }
 :root[data-theme="dark"] .theme-toggle__dark { display: block; }
 .exhibition-shell .mobile-only { display: none; }
-.exhibition-shell .rail-toggle { display: inline-grid; }
 
 .exhibition-shell .sidebar { display: none; }
 .exhibition-shell .main-pane { display: block; min-width: 0; min-height: 0; }
 .exhibition-shell .page-scroll { height: auto; min-height: calc(100vh - 70px); overflow: visible; }
 
-.exhibition-shell .right-rail {
-  position: absolute;
-  z-index: 2;
-  top: 190px;
-  right: clamp(22px, 4vw, 64px);
-  display: block;
-  width: 150px;
-  min-height: 0;
-  overflow: visible;
-  border: 0;
-  border-left: 1px solid var(--line);
-  background: transparent;
-  padding: 0 0 0 22px;
-  opacity: 1;
-  transform: none;
-  backdrop-filter: none;
-}
-.exhibition-shell:not([data-home="true"]) .right-rail { top: 150px; }
-.exhibition-shell .right-rail__close { display: none; }
-.exhibition-shell .rail-item {
-  display: block;
-  margin: 0;
-  border-bottom: 0;
-  padding: 0 0 22px;
-  color: var(--muted);
-}
-.exhibition-shell .rail-item + .rail-item { padding-top: 20px; border-top: 1px solid var(--line); }
-.exhibition-shell .rail-item > svg { display: none; }
-.exhibition-shell .rail-item strong { margin: 0 0 8px; color: var(--muted); font-family: var(--sans); font-size: 12px; font-weight: 400; }
-.exhibition-shell .rail-item span { font-size: 12px; line-height: 1.5; }
-.exhibition-shell .local-time b { color: var(--ink); font-family: var(--serif); font-size: 19px; font-weight: 400; letter-spacing: 0; }
-.exhibition-shell .local-time em { margin-top: 5px; color: var(--muted); font-family: var(--sans); font-size: 11px; }
-.exhibition-shell .local-time small { margin-top: 5px; color: var(--faint); font-family: var(--sans); font-size: 10px; }
-.exhibition-shell .weather-widget__empty { font-family: var(--sans); font-size: 11px; }
-.exhibition-shell .weather-widget__empty button { border-radius: 0; background: transparent; font-size: 11px; }
-.exhibition-shell .weather-widget__temperature b { font-family: var(--serif); font-size: 23px; }
-.exhibition-shell .weather-widget__temperature span { font-family: var(--sans); font-size: 11px; }
-.exhibition-shell .weather-widget dl div { display: block; margin-top: 8px; }
-.exhibition-shell .weather-widget dt, .exhibition-shell .weather-widget dd { display: inline; font-family: var(--sans); font-size: 10px; }
-.exhibition-shell .weather-widget dd { margin-left: 4px; }
-.exhibition-shell .right-rail .network-status { margin: 0; border-top: 1px solid var(--line); padding: 20px 0 0; font-family: var(--sans); font-size: 11px; font-weight: 400; letter-spacing: 0; text-transform: none; }
-.exhibition-shell .rail-collapsed .right-rail, .exhibition-shell.rail-collapsed .right-rail { opacity: 0; pointer-events: none; }
 
 .home { width: min(1320px, 100%); margin: 0 auto; padding: 0 clamp(22px, 4vw, 64px) 140px; }
 .hero { display: block; min-height: 565px; padding: 65px 0 75px; }
@@ -268,12 +225,9 @@ body { font-family: var(--serif); font-size: 17px; }
 @media (max-width: 1100px) {
   .exhibition-shell .titlebar { position: sticky; top: 0; height: 70px; gap: 16px; }
   .exhibition-shell .top-nav { display: none; }
-  .exhibition-shell .mobile-only, .exhibition-shell .rail-toggle { display: inline-grid; }
+  .exhibition-shell .mobile-only { display: inline-grid; }
   .exhibition-shell .sidebar { position: fixed; z-index: 50; top: 70px; bottom: 0; left: 0; display: flex; width: min(300px, calc(100vw - 48px)); visibility: hidden; overflow-y: auto; border-right: 1px solid var(--line); background: var(--frame); padding: 20px 14px; pointer-events: none; transform: translateX(-102%); transition: transform 180ms ease, visibility 0s linear 180ms; }
   .exhibition-shell.sidebar-open .sidebar { visibility: visible; pointer-events: auto; transform: translateX(0); transition-delay: 0s; }
-  .exhibition-shell .right-rail, .exhibition-shell:not([data-home="true"]) .right-rail { position: fixed; z-index: 50; top: 70px; right: 0; bottom: 0; display: block; width: min(320px, calc(100vw - 48px)); visibility: hidden; overflow-y: auto; border-left: 1px solid var(--line); background: var(--frame); padding: 60px 24px 24px; opacity: 1; pointer-events: none; transform: translateX(102%); transition: transform 180ms ease, visibility 0s linear 180ms; }
-  .exhibition-shell.rail-open .right-rail { visibility: visible; pointer-events: auto; transform: translateX(0); transition-delay: 0s; }
-  .exhibition-shell .right-rail__close { position: absolute; top: 14px; right: 16px; display: grid; width: 32px; height: 32px; place-items: center; border: 1px solid var(--line); background: transparent; }
   .mobile-backdrop { top: 70px; }
   .hero { min-height: 0; padding: 70px 0 85px; }
   .hero h1 { font-size: clamp(45px, 8.2vw, 90px); }
@@ -285,7 +239,7 @@ body { font-family: var(--serif); font-size: 17px; }
   .exhibition-shell .titlebar__path { display: block; font-size: 20px; }
   .exhibition-shell .titlebar__actions { gap: 7px; }
   .exhibition-shell .search-button { display: inline-grid; }
-  .exhibition-shell .sidebar, .exhibition-shell .right-rail, .exhibition-shell:not([data-home="true"]) .right-rail { top: 62px; }
+  .exhibition-shell .sidebar { top: 62px; }
   .mobile-backdrop { top: 62px; }
   .home { width: 100%; padding: 0 22px 90px; }
   .hero { padding: 65px 0 75px; }

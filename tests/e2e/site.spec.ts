@@ -52,13 +52,14 @@ test('BRU branding appears in the navbar and share metadata', async ({ page }) =
   await expect(mark).toBeVisible()
   await expect(brand.locator('.brand-word')).toHaveText('BRU')
   await expect(brand.locator('img')).toHaveCount(0)
-  await expect(page.locator('link[rel="icon"]')).toHaveAttribute('href', '/favicon.svg?v=bru-icon')
+  await expect(page.locator('link[rel="icon"]')).toHaveAttribute('href', '/favicon.svg?v=bru-round')
   await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
-    'content', 'https://brucechau.pages.dev/social-card.png?v=bru-icon',
+    'content', 'https://brucechau.pages.dev/social-card.png?v=bru-round',
   )
   await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute(
-    'content', 'https://brucechau.pages.dev/social-card.png?v=bru-icon',
+    'content', 'https://brucechau.pages.dev/social-card.png?v=bru-round',
   )
+  await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute('content', 'summary')
 
   await page.locator('[data-theme-toggle]').click()
   await expect(mark).toBeVisible()
@@ -68,7 +69,8 @@ test('BRU branding appears in the navbar and share metadata', async ({ page }) =
   expect((await page.request.get('/apple-touch-icon.png')).ok()).toBe(true)
   const favicon = await page.request.get('/favicon.svg')
   expect(favicon.ok()).toBe(true)
-  expect(await favicon.text()).toContain('Circular B icon')
+  expect(await favicon.text()).toContain('<circle cx="130" cy="130" r="130"')
+  expect(await favicon.text()).not.toContain('<rect')
 })
 
 test('calendar exposes the Google Calendar booking link', async ({ page }) => {
@@ -110,18 +112,16 @@ test('main pages fit a narrow 320px viewport', async ({ page }) => {
   }
 })
 
-test('neo-cubist hero leaves room for status and career path remains vertical', async ({ page }) => {
+test('neo-cubist hero is centered and career path remains vertical', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 })
   await page.goto('/')
 
   const heading = await page.getByRole('heading', { name: 'Bruce Chau' }).boundingBox()
-  const status = await page.locator('#right-rail').boundingBox()
   const axis = await page.locator('.career__axis').boundingBox()
   const events = await page.locator('.career-event').all()
   expect(heading).not.toBeNull()
-  expect(status).not.toBeNull()
   expect(axis).not.toBeNull()
-  expect(heading!.x + heading!.width).toBeLessThan(status!.x)
+  expect(Math.abs(heading!.x + heading!.width / 2 - 720)).toBeLessThan(2)
   expect(axis!.height).toBeGreaterThan(200)
   expect(axis!.width).toBeLessThan(4)
   expect((await events[0].boundingBox())!.y).toBeLessThan((await events[1].boundingBox())!.y)
@@ -147,7 +147,7 @@ test('Chau lettering keeps the reference proportions and yellow A counter', asyn
   expect(await a.evaluate((element) => getComputedStyle(element, '::after').backgroundColor)).toBe('rgb(248, 211, 41)')
 })
 
-test('hero and desktop navigation are centered without covering the status panel', async ({ page }) => {
+test('hero and desktop navigation are centered without a right sidebar', async ({ page }) => {
   for (const width of [1440, 768, 375]) {
     await page.setViewportSize({ width, height: 900 })
     await page.goto('/')
@@ -159,13 +159,12 @@ test('hero and desktop navigation are centered without covering the status panel
     if (width === 1440) {
       const nav = await page.getByRole('navigation', { name: 'Site navigation' }).boundingBox()
       const social = await page.getByLabel('Social profiles').boundingBox()
-      const status = await page.locator('#right-rail').boundingBox()
       expect(nav).not.toBeNull()
       expect(social).not.toBeNull()
-      expect(status).not.toBeNull()
       expect(Math.abs(nav!.x + nav!.width / 2 - width / 2)).toBeLessThan(2)
-      expect(social!.x + social!.width).toBeLessThan(status!.x)
+      expect(Math.abs(social!.x + social!.width / 2 - width / 2)).toBeLessThan(2)
     }
+    await expect(page.locator('#right-rail, [data-toggle-rail]')).toHaveCount(0)
   }
 })
 
@@ -178,18 +177,6 @@ test('theme switch works in both directions', async ({ page }) => {
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
   await theme.click()
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
-})
-
-test('desktop status panel can be hidden and restored', async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 900 })
-  await page.goto('/')
-
-  const rail = page.locator('#right-rail')
-  await expect(rail).toBeVisible()
-  await page.getByRole('button', { name: 'Hide status panel' }).click()
-  await expect(rail).toHaveCSS('opacity', '0')
-  await page.getByRole('button', { name: 'Show status panel' }).click()
-  await expect(rail).toHaveCSS('opacity', '1')
 })
 
 test('tablet can open, close, and navigate with the left sidebar drawer', async ({ page }) => {
@@ -254,55 +241,4 @@ test('mobile can open, close, and navigate with the left sidebar', async ({ page
   await sidebar.getByRole('link', { name: 'tech' }).click()
   await expect(page).toHaveURL(/\/blogs\/tech\/?$/)
   await expect(sidebar).not.toBeInViewport()
-})
-
-test('tablet can open and close the right status drawer', async ({ page }) => {
-  await page.setViewportSize({ width: 1024, height: 768 })
-  await page.goto('/')
-
-  const rail = page.locator('#right-rail')
-  const toggle = page.locator('[data-toggle-rail]')
-
-  await expect(toggle).toBeVisible()
-  await expect(toggle).toHaveAttribute('aria-label', 'Open status panel')
-  await expect(toggle).toHaveAttribute('aria-expanded', 'false')
-  await expect(rail).not.toBeInViewport()
-
-  await toggle.click()
-  await expect(rail).toBeInViewport()
-  await expect(toggle).toHaveAttribute('aria-label', 'Close status panel')
-  await expect(toggle).toHaveAttribute('aria-expanded', 'true')
-  await expect(rail.getByText('Local time', { exact: true })).toBeVisible()
-  await expect(rail.getByText('Weather', { exact: true })).toBeVisible()
-  await expect.poll(() => page.evaluate(() => (
-    document.elementFromPoint(window.innerWidth - 20, 100)?.closest('#right-rail') !== null
-  ))).toBe(true)
-
-  await rail.getByRole('button', { name: 'Close status panel' }).click()
-  await expect(rail).not.toBeInViewport()
-  await expect(toggle).toHaveAttribute('aria-expanded', 'false')
-})
-
-test('mobile can use the right status drawer and backdrop', async ({ page }) => {
-  await page.setViewportSize({ width: 375, height: 667 })
-  await page.goto('/')
-
-  const rail = page.locator('#right-rail')
-  const toggle = page.locator('[data-toggle-rail]')
-  const backdrop = page.locator('[data-backdrop]')
-
-  await expect(toggle).toBeVisible()
-  await expect(toggle).toHaveAttribute('aria-label', 'Open status panel')
-  await expect(rail).not.toBeInViewport()
-
-  await toggle.click()
-  await expect(rail).toBeInViewport()
-  await expect(backdrop).toBeVisible()
-  await expect(rail.getByText('Local time', { exact: true })).toBeVisible()
-  await expect(rail.getByText('Weather', { exact: true })).toBeVisible()
-
-  await backdrop.click({ position: { x: 20, y: 20 } })
-  await expect(rail).not.toBeInViewport()
-  await expect(backdrop).toBeHidden()
-  await expect(toggle).toHaveAttribute('aria-expanded', 'false')
 })
