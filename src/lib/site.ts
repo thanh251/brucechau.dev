@@ -1,3 +1,5 @@
+import { favoriteCategories, favoriteHref } from '~/data/favorites'
+
 export const SITE = {
   name: 'Bruce Chau',
   title: 'Bruce Chau — Developer, builder, and lifelong learner',
@@ -13,7 +15,7 @@ export const SITE = {
 
 export const NAV_GROUPS = [
   {
-    label: 'BLOGS',
+    label: 'blogs',
     href: '/blogs',
     children: [
       { label: 'tech', href: '/blogs/tech' },
@@ -21,9 +23,16 @@ export const NAV_GROUPS = [
       { label: 'ideas', href: '/blogs/ideas' },
     ],
   },
-  { label: 'FAVORITES', href: '/favorites' },
   {
-    label: 'ABOUT',
+    label: 'favorites',
+    href: '/favorites',
+    children: [
+      { label: 'all favorites', href: '/favorites' },
+      ...favoriteCategories.map(({ label, slug }) => ({ label: label.toLowerCase(), href: favoriteHref(slug) })),
+    ],
+  },
+  {
+    label: 'about',
     href: '/about/whoami',
     children: [
       { label: 'whoami', href: '/about/whoami' },
@@ -33,6 +42,6 @@ export const NAV_GROUPS = [
       { label: 'setup', href: '/about/setup' },
     ],
   },
-  { label: 'PROJECTS', href: '/projects' },
-  { label: 'CALENDAR', href: '/calendar' },
+  { label: 'projects', href: '/projects' },
+  { label: 'calendar', href: '/calendar' },
 ] as const

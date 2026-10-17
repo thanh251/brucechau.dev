@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content'
+import { favoriteCategories, favoriteHref } from '~/data/favorites'
 
 const posts = await getCollection('blog')
 const pages = [
@@ -9,8 +10,10 @@ const pages = [
   { title: 'Health', detail: 'Blog category', href: '/blogs/health' },
   { title: 'Ideas', detail: 'Blog category', href: '/blogs/ideas' },
   { title: 'Favorites', detail: 'Saved things', href: '/favorites' },
+  ...favoriteCategories.map(({ label, slug }) => ({ title: label, detail: 'Favorites category', href: favoriteHref(slug) })),
   { title: 'Who am I', detail: 'About', href: '/about/whoami' },
   { title: 'Uses', detail: 'About', href: '/about/uses' },
+  { title: 'Hardware', detail: 'Uses · MacBook, iPhone, keyboard', href: '/about/uses/hardware' },
   { title: 'Inspiration', detail: 'About', href: '/about/inspiration' },
   { title: 'Collections', detail: 'About', href: '/about/collections' },
   { title: 'Setup', detail: 'About', href: '/about/setup' },

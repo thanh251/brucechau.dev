@@ -115,8 +115,6 @@ button { color: inherit; }
 
 .sidebar, .right-rail { background: var(--glass); backdrop-filter: blur(22px); }
 .sidebar { grid-column: 1; grid-row: 2; position: relative; display: flex; min-height: 0; flex-direction: column; border-right: 1px solid var(--line); padding: 14px 10px; }
-.sidebar__heading { display: flex; min-height: 32px; align-items: center; justify-content: space-between; margin: 2px 7px 11px; color: var(--muted); font-size: 12px; }
-.sidebar__close { display: none; width: 32px; height: 32px; place-items: center; border: 1px solid var(--line); border-radius: 7px; background: var(--panel-2); color: var(--ink); cursor: pointer; }
 .file-tree { display: flex; flex-direction: column; gap: 4px; }
 .tree-row { display: flex; min-height: 35px; align-items: center; gap: 9px; border-radius: 6px; padding: 0 9px; color: var(--muted); font-size: 13px; transition: 140ms ease; }
 a.tree-row:hover, .tree-row.active { background: var(--blue-soft); color: var(--ink); }
@@ -127,12 +125,6 @@ a.tree-row:hover, .tree-row.active { background: var(--blue-soft); color: var(--
 .tree-group[open] summary > svg { transform: rotate(180deg); }
 .tree-children { position: relative; margin: 1px 0 7px 18px; padding-left: 6px; }
 .tree-children::before { content: ''; position: absolute; left: 0; top: 0; bottom: 4px; width: 1px; background: var(--line); }
-.network-status { display: flex; align-items: center; gap: 9px; margin: auto 7px 2px; padding-top: 18px; color: var(--muted); font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
-.network-status__dot { width: 7px; height: 7px; flex: 0 0 auto; border-radius: 50%; background: var(--amber); box-shadow: 0 0 0 3px color-mix(in srgb, var(--amber) 15%, transparent); }
-.network-status[data-state="connected"] .network-status__dot { background: var(--green); box-shadow: 0 0 0 3px color-mix(in srgb, var(--green) 15%, transparent); }
-.network-status[data-state="disconnected"] .network-status__dot { background: #ef4444; box-shadow: 0 0 0 3px rgb(239 68 68 / 15%); }
-.network-status[data-state="connecting"] .network-status__dot { animation: network-pulse 1.15s ease-in-out infinite; }
-@keyframes network-pulse { 50% { opacity: .35; transform: scale(.82); } }
 .weather-widget__heading { display: flex; align-items: center; justify-content: space-between; }
 .weather-widget__heading strong { margin: 0; }
 .weather-widget__symbol { color: var(--amber); font-size: 16px; line-height: 1; }
@@ -318,7 +310,6 @@ a.tree-row:hover, .tree-row.active { background: var(--blue-soft); color: var(--
   .main-pane { grid-column: 1; }
   .sidebar { position: fixed; z-index: 50; top: 48px; bottom: 0; left: 0; width: min(280px, calc(100vw - 48px)); visibility: hidden; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; border-right-color: var(--line); background: var(--frame); box-shadow: 18px 0 50px rgb(0 0 0 / 24%); pointer-events: none; transform: translateX(-102%); transition: transform 180ms ease, visibility 0s linear 180ms; }
   .sidebar-open .sidebar { visibility: visible; pointer-events: auto; transform: translateX(0); transition-delay: 0s; }
-  .sidebar__close { display: grid; }
   .right-rail { position: fixed; z-index: 50; top: 48px; right: 0; bottom: 0; left: auto; display: block; width: min(320px, calc(100vw - 48px)); visibility: hidden; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; border-left-color: var(--line); background: var(--frame); box-shadow: -18px 0 50px rgb(0 0 0 / 24%); opacity: 1; pointer-events: none; transform: translateX(102%); transition: transform 180ms ease, visibility 0s linear 180ms; }
   .rail-open .right-rail { visibility: visible; overflow-y: auto; opacity: 1; pointer-events: auto; transform: translateX(0); transition-delay: 0s; }
   .right-rail__heading > svg { display: none; }

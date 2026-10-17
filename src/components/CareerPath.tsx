@@ -1,40 +1,11 @@
 import { useLayoutEffect, useRef, useState } from 'react'
-
-type CareerEvent = {
-  id: 'weaverse' | 'ptit'
-  year: string
-  title: string
-  subtitle: string
-  range: string
-  eyebrow: string
-  description: string
-}
-
-const events: CareerEvent[] = [
-  {
-    id: 'weaverse',
-    year: 'JAN 2026',
-    title: 'Joined Weaverse',
-    subtitle: 'Active',
-    range: 'JAN 2026 — PRESENT',
-    eyebrow: 'WEAVERSE',
-    description: 'Building thoughtful product experiences with a team that cares about craft.',
-  },
-  {
-    id: 'ptit',
-    year: '2023',
-    title: 'PTIT',
-    subtitle: 'Student · Studying',
-    range: '2023 — Expected 2027',
-    eyebrow: 'POSTS AND TELECOMMUNICATIONS INSTITUTE OF TECHNOLOGY',
-    description: 'Learning computer science foundations while turning ideas into working software.',
-  },
-]
+import { careerContent } from '~/data/career'
 
 export default function CareerPath() {
-  const [selectedId, setSelectedId] = useState<CareerEvent['id']>('ptit')
+  const [selectedId, setSelectedId] = useState(careerContent.initialEventId)
   const [rangePosition, setRangePosition] = useState({ top: 0, height: 0 })
   const timelineRef = useRef<HTMLDivElement>(null)
+  const selectedEvent = careerContent.events.find((event) => event.id === selectedId)
   const nowLabel = new Intl.DateTimeFormat('en-US', {
     month: 'short',
     year: 'numeric',
@@ -71,11 +42,11 @@ export default function CareerPath() {
     <section className="career" aria-labelledby="career-title">
       <header className="career__header">
         <span className="career__index" aria-hidden="true">04</span>
-        <h2 id="career-title">Career Path</h2>
-        <p>Click an event to inspect the chapter.</p>
+        <h2 id="career-title">{careerContent.title}</h2>
+        <p>{careerContent.instruction}</p>
       </header>
 
-      <div className={`career-timeline career-timeline--${selectedId}`} ref={timelineRef}>
+      <div className={`career-timeline career-timeline--${selectedEvent?.side ?? 'right'}`} ref={timelineRef}>
         <div className="career-timeline__axis" aria-hidden="true" />
         <div
           className="career-timeline__range"
@@ -88,10 +59,10 @@ export default function CareerPath() {
         </div>
 
         <div className="career-timeline__entries">
-          {events.map((event) => {
+          {careerContent.events.map((event) => {
             const selected = selectedId === event.id
             return (
-              <div className={`career-entry career-entry--${event.id}`} key={event.id}>
+              <div className={`career-entry career-entry--${event.id} career-entry--${event.side}`} key={event.id}>
                 <button
                   type="button"
                   className="career-entry__event"
@@ -100,7 +71,10 @@ export default function CareerPath() {
                   aria-controls={selected ? `career-detail-${event.id}` : undefined}
                 >
                   <span className="career-entry__year">{event.year}</span>
-                  <strong>{event.title}</strong>
+                  <span className="career-entry__identity">
+                    <img className="career-entry__logo" src={event.logo} alt="" width="38" height="38" loading="lazy" />
+                    <strong>{event.title}</strong>
+                  </span>
                   <small>{event.subtitle}</small>
                 </button>
                 <button
@@ -119,7 +93,7 @@ export default function CareerPath() {
                     <h3>{event.title}</h3>
                     <p>{event.description}</p>
                     <div className="career-entry__meta"><span>{event.subtitle}</span></div>
-                    {event.id === 'ptit' && <small>Overlaps with Weaverse from 2026.</small>}
+                    {event.note && <small>{event.note}</small>}
                   </article>
                 )}
               </div>

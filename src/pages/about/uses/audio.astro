@@ -1,0 +1,12 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro'
+import StudioShell from '~/components/StudioShell.astro'
+import UsesItemGallery from '~/components/UsesItemGallery.astro'
+import { audioContent } from '~/data/audio'
+---
+
+<BaseLayout title="Audio — Bruce Chau" description={audioContent.description}>
+  <StudioShell active="/about/uses" filename="about/uses/audio.md">
+    <UsesItemGallery content={audioContent} />
+  </StudioShell>
+</BaseLayout>

@@ -1,0 +1,12 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro'
+import StudioShell from '~/components/StudioShell.astro'
+import UsesItemGallery from '~/components/UsesItemGallery.astro'
+import { hardwareContent } from '~/data/hardware'
+---
+
+<BaseLayout title="Hardware — Bruce Chau" description={hardwareContent.description}>
+  <StudioShell active="/about/uses" filename="about/uses/hardware.md">
+    <UsesItemGallery content={hardwareContent} />
+  </StudioShell>
+</BaseLayout>

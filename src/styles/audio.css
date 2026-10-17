@@ -1,0 +1,247 @@
+.hardware-dialog--audio .hardware-dialog__panel {
+  grid-template-areas: 'image copy' 'audio audio' 'ratings ratings';
+  min-height: 0;
+}
+
+.hardware-dialog--audio .hardware-dialog__image-wrap {
+  min-height: 265px;
+}
+
+.hardware-dialog--audio .hardware-dialog__image-wrap img {
+  max-height: 225px;
+}
+
+.hardware-dialog--audio .hardware-dialog__copy {
+  padding-bottom: 28px;
+}
+
+.hardware-dialog--audio .hardware-dialog__ratings {
+  display: grid;
+  grid-template-columns: 310px minmax(0, 1fr);
+  align-items: center;
+  gap: 20px;
+  border-top: 1px solid var(--line);
+  border-right: 0;
+  padding: 24px 36px 30px;
+}
+
+.audio-frequency {
+  grid-area: audio;
+  min-width: 0;
+  border-top: 1px solid var(--line);
+  background: var(--page);
+  padding: 27px 36px 30px;
+}
+
+.audio-frequency[hidden] {
+  display: none;
+}
+
+.audio-frequency__header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.audio-frequency__eyebrow {
+  color: var(--blue);
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.audio-frequency h3 {
+  margin: 5px 0 0;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: clamp(28px, 3.5vw, 37px);
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.audio-frequency__unit {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.audio-frequency__instruction {
+  margin: 12px 0 9px;
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 13px;
+}
+
+.audio-frequency__plot {
+  overflow-x: auto;
+  border: 1px solid var(--line-soft);
+  background: var(--panel);
+}
+
+.audio-frequency__plot:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.audio-frequency__graph {
+  display: block;
+  width: 100%;
+  min-width: 620px;
+  height: auto;
+}
+
+.audio-frequency__grid line {
+  stroke: var(--line-soft);
+  stroke-width: 1;
+}
+
+.audio-frequency__grid--vertical line {
+  stroke-dasharray: 3 4;
+}
+
+.audio-frequency__grid text {
+  fill: var(--muted);
+  font-family: var(--mono);
+  font-size: 10px;
+}
+
+.audio-frequency__curve {
+  fill: none;
+  stroke: var(--blue);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.audio-frequency__hit {
+  fill: transparent;
+  cursor: pointer;
+  transition: fill 160ms ease;
+}
+
+.audio-frequency__hit:hover,
+.audio-frequency__hit:focus-visible,
+.audio-frequency__hit.is-selected {
+  fill: var(--blue-soft);
+  fill-opacity: .5;
+}
+
+.audio-frequency__hit:focus-visible {
+  outline: none;
+  stroke: var(--blue);
+  stroke-width: 2;
+}
+
+.audio-frequency__bands {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 11px;
+}
+
+.audio-frequency__band {
+  border: 1px solid var(--line);
+  background: var(--page);
+  padding: 7px 9px;
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.audio-frequency__band:hover,
+.audio-frequency__band:focus-visible {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+.audio-frequency__band.is-selected {
+  border-color: var(--blue);
+  background: var(--blue);
+  color: #fff;
+}
+
+.audio-frequency__reading {
+  min-height: 100px;
+  margin-top: 15px;
+  border-left: 3px solid var(--blue);
+  background: var(--panel);
+  padding: 12px 16px;
+}
+
+.audio-frequency__reading-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.audio-frequency__reading-heading strong {
+  font-family: var(--serif);
+  font-size: 21px;
+  font-weight: 400;
+}
+
+.audio-frequency__reading-heading span {
+  color: var(--blue);
+  font-family: var(--mono);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.audio-frequency__reading p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.audio-frequency__method {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.audio-frequency__method a {
+  color: var(--blue);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+@media (max-width: 760px) {
+  .hardware-dialog--audio .hardware-dialog__panel {
+    grid-template-areas: 'image' 'copy' 'audio' 'ratings';
+  }
+
+  .hardware-dialog--audio .hardware-dialog__ratings {
+    display: block;
+    padding: 22px 25px 25px;
+  }
+
+  .audio-frequency {
+    padding: 23px 25px 25px;
+  }
+
+  .audio-frequency__header {
+    align-items: start;
+    flex-direction: column;
+    gap: 5px;
+  }
+}
+
+@media (max-width: 380px) {
+  .audio-frequency { padding-inline: 20px; }
+  .audio-frequency__band { font-size: 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .audio-frequency__hit { transition: none; }
+}

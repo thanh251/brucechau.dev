@@ -2,14 +2,20 @@
 import BaseLayout from '~/layouts/BaseLayout.astro'
 import StudioShell from '~/components/StudioShell.astro'
 import ProsePage from '~/components/ProsePage.astro'
+import { whoamiContent } from '~/data/whoami'
 ---
 
-<BaseLayout title="Who am I — Bruce Chau">
+<BaseLayout title={`${whoamiContent.title} — Bruce Chau`}>
   <StudioShell active="/about/whoami" filename="about/whoami.md">
-    <ProsePage eyebrow="about" title="Who am I?" description="I’m Bruce — a developer who enjoys turning fuzzy ideas into useful, carefully made software.">
-      <p>I am currently studying at PTIT and building with Weaverse. This site is my public notebook: a place to document what I learn before the details fade.</p>
-      <h2>What I care about</h2>
-      <ul><li>Software that feels calm and obvious to use.</li><li>Strong fundamentals over fashionable complexity.</li><li>Health, curiosity, and the patience to keep learning.</li></ul>
+    <ProsePage eyebrow={whoamiContent.eyebrow} title={whoamiContent.title} description={whoamiContent.description}>
+      {whoamiContent.introduction.map((paragraph) => <p>{paragraph}</p>)}
+      {whoamiContent.sections.map((section) => (
+        <section>
+          <h2>{section.title}</h2>
+          {section.paragraphs?.map((paragraph) => <p>{paragraph}</p>)}
+          {section.points && <ul>{section.points.map((point) => <li>{point}</li>)}</ul>}
+        </section>
+      ))}
     </ProsePage>
   </StudioShell>
 </BaseLayout>

@@ -1,0 +1,12 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro'
+import StudioShell from '~/components/StudioShell.astro'
+import UsesItemGallery from '~/components/UsesItemGallery.astro'
+import { dailyContent } from '~/data/daily'
+---
+
+<BaseLayout title="Daily — Bruce Chau" description={dailyContent.description}>
+  <StudioShell active="/about/uses" filename="about/uses/daily.md">
+    <UsesItemGallery content={dailyContent} />
+  </StudioShell>
+</BaseLayout>

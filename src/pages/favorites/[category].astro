@@ -1,0 +1,20 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro'
+import StudioShell from '~/components/StudioShell.astro'
+import ProsePage from '~/components/ProsePage.astro'
+import { favoriteCategories, favoriteHref } from '~/data/favorites'
+
+export function getStaticPaths() {
+  return favoriteCategories.map((category) => ({ params: { category: category.slug }, props: { category } }))
+}
+
+const { category } = Astro.props as { category: (typeof favoriteCategories)[number] }
+---
+
+<BaseLayout title={`${category.label} — Favorites — Bruce Chau`} description={category.description}>
+  <StudioShell active={favoriteHref(category.slug)} filename={`favorites/${category.slug}.md`}>
+    <ProsePage eyebrow="favorites" title={category.label} description={category.description}>
+      <p class="favorite-empty">No entries yet. This collection is ready for future additions.</p>
+    </ProsePage>
+  </StudioShell>
+</BaseLayout>

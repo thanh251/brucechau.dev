@@ -10,7 +10,6 @@ interface Props {
 }
 
 const { active = Astro.url.pathname, filename = 'README.md' } = Astro.props
-const isActive = (href: string) => href === '/' ? active === '/' : active === href || active.startsWith(`${href}/`)
 ---
 
 <div class="desktop-frame exhibition-shell" data-home={active === '/'} data-filename={filename}>
@@ -26,29 +25,29 @@ const isActive = (href: string) => href === '/' ? active === '/' : active === hr
       <span class="brand-word" aria-hidden="true">BRU</span>
     </a>
     <nav class="top-nav" aria-label="Site navigation">
-      <a class:list={[{ active: isActive('/') }]} href="/">Home</a>
-      <details class="top-nav__group">
-        <summary class:list={[{ active: isActive('/blogs') }]}>Blogs <Icon name="chevron" size={12} /></summary>
-        <div class="top-nav__menu">
-          <a href="/blogs">All writing</a>
+      <a href="/">home</a>
+      <div class="top-nav__group" data-nav-dropdown>
+        <a class="top-nav__trigger" href="/blogs" aria-expanded="false" aria-controls="blogs-menu">blogs <Icon name="chevron" size={12} /></a>
+        <div class="top-nav__menu" id="blogs-menu">
+          <a href="/blogs">all writing</a>
           <a href="/blogs/tech">tech</a>
           <a href="/blogs/health">health</a>
           <a href="/blogs/ideas">ideas</a>
         </div>
-      </details>
-      <a class:list={[{ active: isActive('/favorites') }]} href="/favorites">Favorites</a>
-      <details class="top-nav__group">
-        <summary class:list={[{ active: isActive('/about') }]}>About <Icon name="chevron" size={12} /></summary>
-        <div class="top-nav__menu">
+      </div>
+      <a href="/favorites">favorites</a>
+      <div class="top-nav__group" data-nav-dropdown>
+        <a class="top-nav__trigger" href="/about/whoami" aria-expanded="false" aria-controls="about-menu">about <Icon name="chevron" size={12} /></a>
+        <div class="top-nav__menu" id="about-menu">
           <a href="/about/whoami">whoami</a>
           <a href="/about/uses">uses</a>
           <a href="/about/inspiration">inspiration</a>
           <a href="/about/collections">collections</a>
           <a href="/about/setup">setup</a>
         </div>
-      </details>
-      <a class:list={[{ active: isActive('/projects') }]} href="/projects">Projects</a>
-      <a class:list={[{ active: isActive('/calendar') }]} href="/calendar">Calendar</a>
+      </div>
+      <a href="/projects">projects</a>
+      <a href="/calendar">calendar</a>
     </nav>
     <div class="titlebar__actions">
       <button class="search-button" type="button" data-open-search aria-label="Search this site"><Icon name="search" /></button>
@@ -64,6 +63,29 @@ const isActive = (href: string) => href === '/' ? active === '/' : active === hr
 <div class="mobile-backdrop" data-backdrop></div>
 
 <script>
+  const navGroups = Array.from(document.querySelectorAll<HTMLElement>('[data-nav-dropdown]'))
+  const setOpenNavGroup = (activeGroup: HTMLElement | null) => {
+    for (const group of navGroups) {
+      const isOpen = group === activeGroup
+      group.classList.toggle('is-open', isOpen)
+      group.querySelector('.top-nav__trigger')?.setAttribute('aria-expanded', String(isOpen))
+    }
+  }
+  for (const group of navGroups) {
+    group.addEventListener('pointerenter', () => setOpenNavGroup(group))
+    group.addEventListener('pointerleave', () => setOpenNavGroup(null))
+    group.addEventListener('focusin', () => setOpenNavGroup(group))
+    group.addEventListener('focusout', (event) => {
+      if (!group.contains(event.relatedTarget as Node | null)) setOpenNavGroup(null)
+    })
+    group.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return
+      group.querySelector<HTMLElement>('.top-nav__trigger')?.focus()
+      setOpenNavGroup(null)
+      event.preventDefault()
+    })
+  }
+
   const frame = document.querySelector<HTMLElement>('.desktop-frame')
   const backdrop = document.querySelector<HTMLElement>('[data-backdrop]')
   const sidebar = document.querySelector<HTMLElement>('#site-sidebar')
@@ -85,7 +107,7 @@ const isActive = (href: string) => href === '/' ? active === '/' : active === hr
       sidebar?.removeAttribute('inert')
       sidebar?.removeAttribute('aria-hidden')
     }
-    if (open) sidebar?.querySelector<HTMLElement>('a, button, summary')?.focus()
+    if (open) sidebar?.querySelector<HTMLElement>('a, summary')?.focus()
     else if (restoreFocus) sidebarToggle?.focus()
     syncBackdrop()
   }
@@ -97,7 +119,6 @@ const isActive = (href: string) => href === '/' ? active === '/' : active === hr
     setSidebarOpen(!frame?.classList.contains('sidebar-open'))
   })
   backdrop?.addEventListener('click', closeDrawers)
-  document.querySelector('[data-close-sidebar]')?.addEventListener('click', () => setSidebarOpen(false, true))
   document.querySelector('#site-sidebar')?.addEventListener('click', (event) => {
     if ((event.target as HTMLElement).closest('a')) setSidebarOpen(false)
   })

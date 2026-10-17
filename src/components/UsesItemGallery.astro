@@ -1,0 +1,306 @@
+---
+import { hardwareRatingCriteria } from '~/data/hardware'
+import { radarPoints, radarSpokeEnds } from '~/lib/radar'
+import { audioFrequencyBands, frequencyPath, frequencyX, frequencyY, type AudioFrequencyResponse } from '~/lib/audio-frequency'
+import '~/styles/hardware.css'
+import '~/styles/audio.css'
+
+type RatingKey = (typeof hardwareRatingCriteria)[number]['key']
+
+interface UsesItem {
+  number: string
+  name: string
+  details: string
+  note: string
+  review: { summary: string; detail: string }
+  ratings: Record<RatingKey, number>
+  ratingReasons: Record<RatingKey, string>
+  image: string
+  imageWidth: number
+  imageHeight: number
+  imageAlt: string
+  imageSource: string
+  frequencyResponse?: AudioFrequencyResponse
+}
+
+interface Props {
+  content: {
+    eyebrow: string
+    title: string
+    description: string
+    items: readonly UsesItem[]
+  }
+}
+
+const { content } = Astro.props
+const firstItem = content.items[0]
+const firstRatings = hardwareRatingCriteria.map(({ key }) => firstItem.ratings[key])
+const initialFrequencyResponse = content.items.find((item) => item.frequencyResponse)?.frequencyResponse
+---
+
+<main class="hardware-page" data-uses-gallery data-uses-items={JSON.stringify(content.items)}>
+  <header class="hardware-hero">
+    <a class="hardware-back" href="/about/uses"><span aria-hidden="true">←</span> all uses</a>
+    <div class="hardware-hero__heading">
+      <div>
+        <span class="hardware-hero__eyebrow">{content.eyebrow}</span>
+        <h1>{content.title}</h1>
+      </div>
+      <span class="hardware-hero__count">{String(content.items.length).padStart(2, '0')} / everyday {content.items.length === 1 ? 'piece' : 'pieces'}</span>
+    </div>
+    <p>{content.description}</p>
+  </header>
+
+  <div class="hardware-list">
+    {content.items.map((item, index) => (
+      <article class="hardware-item">
+        <div class="hardware-item__image-wrap">
+          <img src={item.image} alt={item.imageAlt} width={item.imageWidth} height={item.imageHeight} loading="lazy" decoding="async" />
+        </div>
+        <div class="hardware-item__body">
+          <h2>{item.name}</h2>
+          <p class="hardware-item__details">{item.details}</p>
+          <p class="hardware-item__note">{item.note}</p>
+        </div>
+        <span class="hardware-item__number" aria-hidden="true">{item.number} +</span>
+        <button class="hardware-item__open" type="button" data-uses-index={index} aria-haspopup="dialog" aria-controls="uses-quick-review" aria-label={`Open quick review of ${item.name}`}></button>
+      </article>
+    ))}
+  </div>
+
+  <dialog class:list={['hardware-dialog', { 'hardware-dialog--audio': initialFrequencyResponse }]} id="uses-quick-review" data-item={firstItem.number} aria-labelledby="uses-dialog-title" aria-describedby="uses-dialog-summary">
+    <div class="hardware-dialog__panel">
+      <button class="hardware-dialog__close" type="button" data-close-review aria-label="Close quick review">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 5l14 14M19 5L5 19" /></svg>
+      </button>
+      <figure class="hardware-dialog__image-wrap">
+        <img src={firstItem.image} alt={firstItem.imageAlt} width={firstItem.imageWidth} height={firstItem.imageHeight} data-review-image />
+      </figure>
+      <div class="hardware-dialog__copy">
+        <span class="hardware-dialog__eyebrow">Quick review</span>
+        <h2 id="uses-dialog-title" data-review-title>{firstItem.name}</h2>
+        <p class="hardware-dialog__specs" data-review-details>{firstItem.details}</p>
+        <div class="hardware-dialog__rule" aria-hidden="true"><span></span></div>
+        <p class="hardware-dialog__summary" id="uses-dialog-summary" data-review-summary>{firstItem.review.summary}</p>
+        <p class="hardware-dialog__detail" data-review-detail>{firstItem.review.detail}</p>
+      </div>
+      {initialFrequencyResponse && (
+        <section class="audio-frequency" data-audio-frequency hidden={!firstItem.frequencyResponse} aria-label="Interactive frequency response">
+          <div class="audio-frequency__header">
+            <div>
+              <span class="audio-frequency__eyebrow">Sound signature / measured</span>
+              <h3>Frequency response</h3>
+            </div>
+            <span class="audio-frequency__unit">relative dB · 20 Hz–10 kHz</span>
+          </div>
+          <p class="audio-frequency__instruction">Select a region of the graph to explore how it may sound.</p>
+          <div class="audio-frequency__plot" tabindex="0" aria-label="Scrollable frequency response graph">
+          <svg class="audio-frequency__graph" viewBox="0 0 720 224" aria-label="Frequency response graph with selectable sub-bass, bass, midrange, presence, and treble regions">
+            {[10, 0, -10].map((db) => (
+              <g class="audio-frequency__grid">
+                <line x1="48" x2="700" y1={frequencyY(db)} y2={frequencyY(db)} />
+                <text x="39" y={frequencyY(db) + 4} text-anchor="end">{db > 0 ? `+${db}` : db}</text>
+              </g>
+            ))}
+            {[20, 60, 250, 1000, 2500, 5000, 10000].map((hz) => (
+              <g class="audio-frequency__grid audio-frequency__grid--vertical">
+                <line x1={frequencyX(hz)} x2={frequencyX(hz)} y1="20" y2="186" />
+                <text x={frequencyX(hz)} y="211" text-anchor="middle">{hz >= 1000 ? `${hz / 1000}k` : hz}</text>
+              </g>
+            ))}
+            <path class="audio-frequency__curve" d={frequencyPath(initialFrequencyResponse.points)} data-audio-path />
+            {audioFrequencyBands.map((band, index) => (
+              <rect
+                class:list={['audio-frequency__hit', { 'is-selected': index === 0 }]}
+                x={frequencyX(band.from)}
+                y="20"
+                width={frequencyX(band.to) - frequencyX(band.from)}
+                height="166"
+                role="button"
+                tabindex="0"
+                aria-label={`Explore ${band.label}, ${band.from} to ${band.to} hertz`}
+                aria-pressed={index === 0 ? 'true' : 'false'}
+                data-audio-band-index={index}
+              />
+            ))}
+          </svg>
+          </div>
+          <div class="audio-frequency__bands" aria-label="Frequency regions">
+            {audioFrequencyBands.map((band, index) => (
+              <button class:list={['audio-frequency__band', { 'is-selected': index === 0 }]} type="button" data-audio-band-index={index} aria-pressed={index === 0 ? 'true' : 'false'}>{band.label}</button>
+            ))}
+          </div>
+          <div class="audio-frequency__reading" aria-live="polite">
+            <div class="audio-frequency__reading-heading">
+              <strong data-audio-band-title>{audioFrequencyBands[0].label}</strong>
+              <span data-audio-band-range>20–60 Hz</span>
+            </div>
+            <p data-audio-band-description>{initialFrequencyResponse.impressions.subBass}</p>
+          </div>
+          <p class="audio-frequency__method">Smoothed, unequalized response shown relative to 1 kHz—not absolute loudness. Ear tips and fit change the result; measurements above 10 kHz are excluded. <a href={initialFrequencyResponse.sourceUrl} target="_blank" rel="noopener noreferrer" data-audio-source>{initialFrequencyResponse.sourceName}</a> · <a href={initialFrequencyResponse.contextUrl} target="_blank" rel="noopener noreferrer" data-audio-context>{initialFrequencyResponse.contextName}</a></p>
+        </section>
+      )}
+      <section class="hardware-dialog__ratings" aria-label="Ratings out of five">
+        <svg class="hardware-radar" viewBox="0 0 320 250" aria-hidden="true" focusable="false">
+          {[1, 2, 3, 4, 5].map((level) => <polygon class="hardware-radar__ring" points={radarPoints(Array(5).fill(level))} />)}
+          {radarSpokeEnds.map(({ x, y }) => <line class="hardware-radar__spoke" x1="160" y1="126" x2={x} y2={y} />)}
+          <polygon class="hardware-radar__score" points={radarPoints(firstRatings)} data-radar-shape />
+          <text x="160" y="29" text-anchor="middle">PRICE</text>
+          <text x="251" y="105" text-anchor="start">PERF</text>
+          <text x="214" y="220" text-anchor="middle">COMFORT</text>
+          <text x="106" y="220" text-anchor="middle">BUILD</text>
+          <text x="69" y="105" text-anchor="end">LOOKS</text>
+        </svg>
+        <div class="hardware-ratings__scores" aria-label="Rating explanations">
+          {hardwareRatingCriteria.map(({ key, label }) => (
+            <details class="hardware-rating" data-rating-key={key}>
+              <summary>
+                <span class="hardware-rating__label">{label}</span>
+                <span class="hardware-rating__value"><strong data-score-key={key}>{firstItem.ratings[key]}</strong><span>/ 5</span></span>
+                <span class="hardware-rating__chevron" aria-hidden="true"></span>
+              </summary>
+              <p data-rating-reason={key}>{firstItem.ratingReasons[key]}</p>
+            </details>
+          ))}
+        </div>
+        <button class="hardware-dialog__bottom-close" type="button" data-close-review>Close review</button>
+      </section>
+    </div>
+  </dialog>
+</main>
+
+<script>
+  import { hardwareRatingCriteria } from '~/data/hardware'
+  import { radarPoints } from '~/lib/radar'
+  import { audioFrequencyBands, frequencyPath, type AudioFrequencyResponse } from '~/lib/audio-frequency'
+
+  interface ReviewItem {
+    number: string
+    name: string
+    details: string
+    review: { summary: string; detail: string }
+    ratings: Record<(typeof hardwareRatingCriteria)[number]['key'], number>
+    ratingReasons: Record<(typeof hardwareRatingCriteria)[number]['key'], string>
+    image: string
+    imageWidth: number
+    imageHeight: number
+    imageAlt: string
+    frequencyResponse?: AudioFrequencyResponse
+  }
+
+  const gallery = document.querySelector<HTMLElement>('[data-uses-gallery]')
+  const items = JSON.parse(gallery?.dataset.usesItems ?? '[]') as ReviewItem[]
+  const reviewDialog = gallery?.querySelector<HTMLDialogElement>('#uses-quick-review')
+  const reviewImage = reviewDialog?.querySelector<HTMLImageElement>('[data-review-image]')
+  const reviewTitle = reviewDialog?.querySelector<HTMLElement>('[data-review-title]')
+  const reviewDetails = reviewDialog?.querySelector<HTMLElement>('[data-review-details]')
+  const reviewSummary = reviewDialog?.querySelector<HTMLElement>('[data-review-summary]')
+  const reviewDetail = reviewDialog?.querySelector<HTMLElement>('[data-review-detail]')
+  const radarShape = reviewDialog?.querySelector<SVGPolygonElement>('[data-radar-shape]')
+  const audioSection = reviewDialog?.querySelector<HTMLElement>('[data-audio-frequency]')
+  const audioPath = audioSection?.querySelector<SVGPathElement>('[data-audio-path]')
+  const audioTitle = audioSection?.querySelector<HTMLElement>('[data-audio-band-title]')
+  const audioRange = audioSection?.querySelector<HTMLElement>('[data-audio-band-range]')
+  const audioDescription = audioSection?.querySelector<HTMLElement>('[data-audio-band-description]')
+  const audioSource = audioSection?.querySelector<HTMLAnchorElement>('[data-audio-source]')
+  const audioContext = audioSection?.querySelector<HTMLAnchorElement>('[data-audio-context]')
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)')
+  let opener: HTMLButtonElement | null = null
+  let closeTimer: number | undefined
+  let activeFrequencyResponse: AudioFrequencyResponse | undefined
+
+  const selectAudioBand = (index: number) => {
+    const band = audioFrequencyBands[index]
+    if (!band || !activeFrequencyResponse || !audioTitle || !audioRange || !audioDescription) return
+    audioSection?.querySelectorAll<HTMLElement | SVGRectElement>('[data-audio-band-index]').forEach((control) => {
+      const selected = Number(control.dataset.audioBandIndex) === index
+      control.classList.toggle('is-selected', selected)
+      control.setAttribute('aria-pressed', String(selected))
+    })
+    audioTitle.textContent = band.label
+    audioRange.textContent = `${band.from.toLocaleString()}–${band.to.toLocaleString()} Hz`
+    audioDescription.textContent = activeFrequencyResponse.impressions[band.key]
+  }
+
+  audioSection?.querySelectorAll<HTMLElement | SVGRectElement>('[data-audio-band-index]').forEach((control) => {
+    control.addEventListener('click', () => selectAudioBand(Number(control.dataset.audioBandIndex)))
+    if (control instanceof SVGRectElement) {
+      control.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault()
+          selectAudioBand(Number(control.dataset.audioBandIndex))
+        }
+      })
+    }
+  })
+
+  const closeReview = () => {
+    if (!reviewDialog?.open || closeTimer !== undefined) return
+    reviewDialog.classList.remove('is-visible')
+    if (reducedMotion.matches) {
+      reviewDialog.close()
+    } else {
+      closeTimer = window.setTimeout(() => {
+        closeTimer = undefined
+        reviewDialog.close()
+      }, 220)
+    }
+  }
+
+  gallery?.querySelectorAll<HTMLButtonElement>('[data-uses-index]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const item = items[Number(button.dataset.usesIndex)]
+      if (!item || !reviewDialog || !reviewImage || !reviewTitle || !reviewDetails || !reviewSummary || !reviewDetail || !radarShape) return
+      opener = button
+      reviewImage.src = item.image
+      reviewImage.alt = item.imageAlt
+      reviewImage.width = item.imageWidth
+      reviewImage.height = item.imageHeight
+      reviewTitle.textContent = item.name
+      reviewDetails.textContent = item.details
+      reviewSummary.textContent = item.review.summary
+      reviewDetail.textContent = item.review.detail
+      radarShape.setAttribute('points', radarPoints(hardwareRatingCriteria.map(({ key }) => item.ratings[key])))
+      if (audioSection) {
+        activeFrequencyResponse = item.frequencyResponse
+        audioSection.hidden = !activeFrequencyResponse
+        reviewDialog.classList.toggle('hardware-dialog--audio', Boolean(activeFrequencyResponse))
+        if (activeFrequencyResponse && audioPath && audioSource && audioContext) {
+          audioPath.setAttribute('d', frequencyPath(activeFrequencyResponse.points))
+          audioSource.href = activeFrequencyResponse.sourceUrl
+          audioSource.textContent = activeFrequencyResponse.sourceName
+          audioContext.href = activeFrequencyResponse.contextUrl
+          audioContext.textContent = activeFrequencyResponse.contextName
+          selectAudioBand(0)
+        }
+      }
+      reviewDialog.querySelectorAll<HTMLDetailsElement>('.hardware-rating').forEach((rating) => { rating.open = false })
+      hardwareRatingCriteria.forEach(({ key }) => {
+        const score = reviewDialog.querySelector<HTMLElement>(`[data-score-key="${key}"]`)
+        const reason = reviewDialog.querySelector<HTMLElement>(`[data-rating-reason="${key}"]`)
+        if (score) score.textContent = String(item.ratings[key])
+        if (reason) reason.textContent = item.ratingReasons[key]
+      })
+      reviewDialog.dataset.item = item.number
+      reviewDialog.showModal()
+      document.body.classList.add('hardware-review-open')
+      requestAnimationFrame(() => requestAnimationFrame(() => reviewDialog.classList.add('is-visible')))
+    })
+  })
+
+  reviewDialog?.querySelectorAll('[data-close-review]').forEach((button) => button.addEventListener('click', closeReview))
+  reviewDialog?.addEventListener('cancel', (event) => {
+    event.preventDefault()
+    closeReview()
+  })
+  reviewDialog?.addEventListener('click', (event) => {
+    if (event.target === reviewDialog) closeReview()
+  })
+  reviewDialog?.addEventListener('close', () => {
+    if (closeTimer !== undefined) window.clearTimeout(closeTimer)
+    closeTimer = undefined
+    reviewDialog.classList.remove('is-visible')
+    document.body.classList.remove('hardware-review-open')
+    opener?.focus()
+  })
+</script>
