@@ -91,18 +91,17 @@ const initialFrequencyResponse = content.items.find((item) => item.frequencyResp
               <span class="audio-frequency__eyebrow">Sound signature / measured</span>
               <h3>Frequency response</h3>
             </div>
-            <span class="audio-frequency__unit">relative dB · 20 Hz–10 kHz</span>
+            <span class="audio-frequency__unit">relative dB · 20 Hz–20 kHz</span>
           </div>
-          <p class="audio-frequency__instruction">Select a region of the graph to explore how it may sound.</p>
           <div class="audio-frequency__plot" tabindex="0" aria-label="Scrollable frequency response graph">
-          <svg class="audio-frequency__graph" viewBox="0 0 720 224" aria-label="Frequency response graph with selectable sub-bass, bass, midrange, presence, and treble regions">
-            {[10, 0, -10].map((db) => (
+          <svg class="audio-frequency__graph" viewBox="0 0 720 224" aria-label="Frequency response graph with selectable sub-bass, bass, midrange, presence, treble, and air regions">
+            {[10, 0, -10, -15].map((db) => (
               <g class="audio-frequency__grid">
                 <line x1="48" x2="700" y1={frequencyY(db)} y2={frequencyY(db)} />
                 <text x="39" y={frequencyY(db) + 4} text-anchor="end">{db > 0 ? `+${db}` : db}</text>
               </g>
             ))}
-            {[20, 60, 250, 1000, 2500, 5000, 10000].map((hz) => (
+            {[20, 60, 250, 1000, 2500, 5000, 10000, 20000].map((hz) => (
               <g class="audio-frequency__grid audio-frequency__grid--vertical">
                 <line x1={frequencyX(hz)} x2={frequencyX(hz)} y1="20" y2="186" />
                 <text x={frequencyX(hz)} y="211" text-anchor="middle">{hz >= 1000 ? `${hz / 1000}k` : hz}</text>
@@ -137,7 +136,6 @@ const initialFrequencyResponse = content.items.find((item) => item.frequencyResp
             </div>
             <p data-audio-band-description>{initialFrequencyResponse.impressions.subBass}</p>
           </div>
-          <p class="audio-frequency__method">Smoothed, unequalized response shown relative to 1 kHz—not absolute loudness. Ear tips and fit change the result; measurements above 10 kHz are excluded. <a href={initialFrequencyResponse.sourceUrl} target="_blank" rel="noopener noreferrer" data-audio-source>{initialFrequencyResponse.sourceName}</a> · <a href={initialFrequencyResponse.contextUrl} target="_blank" rel="noopener noreferrer" data-audio-context>{initialFrequencyResponse.contextName}</a></p>
         </section>
       )}
       <section class="hardware-dialog__ratings" aria-label="Ratings out of five">
@@ -202,8 +200,6 @@ const initialFrequencyResponse = content.items.find((item) => item.frequencyResp
   const audioTitle = audioSection?.querySelector<HTMLElement>('[data-audio-band-title]')
   const audioRange = audioSection?.querySelector<HTMLElement>('[data-audio-band-range]')
   const audioDescription = audioSection?.querySelector<HTMLElement>('[data-audio-band-description]')
-  const audioSource = audioSection?.querySelector<HTMLAnchorElement>('[data-audio-source]')
-  const audioContext = audioSection?.querySelector<HTMLAnchorElement>('[data-audio-context]')
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)')
   let opener: HTMLButtonElement | null = null
   let closeTimer: number | undefined
@@ -265,12 +261,8 @@ const initialFrequencyResponse = content.items.find((item) => item.frequencyResp
         activeFrequencyResponse = item.frequencyResponse
         audioSection.hidden = !activeFrequencyResponse
         reviewDialog.classList.toggle('hardware-dialog--audio', Boolean(activeFrequencyResponse))
-        if (activeFrequencyResponse && audioPath && audioSource && audioContext) {
+        if (activeFrequencyResponse && audioPath) {
           audioPath.setAttribute('d', frequencyPath(activeFrequencyResponse.points))
-          audioSource.href = activeFrequencyResponse.sourceUrl
-          audioSource.textContent = activeFrequencyResponse.sourceName
-          audioContext.href = activeFrequencyResponse.contextUrl
-          audioContext.textContent = activeFrequencyResponse.contextName
           selectAudioBand(0)
         }
       }

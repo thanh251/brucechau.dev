@@ -130,7 +130,7 @@ test('Uses shows five categories with descriptions at desktop and mobile widths'
   }
 })
 
-test('Audio IE 900 shows a sourced interactive frequency response at each breakpoint', async ({ page }) => {
+test('Audio IE 900 shows a 20 kHz interactive frequency response without notes at each breakpoint', async ({ page }) => {
   test.setTimeout(60_000)
   for (const width of [1440, 820, 375, 320]) {
     await page.setViewportSize({ width, height: width <= 375 ? 720 : 900 })
@@ -142,8 +142,12 @@ test('Audio IE 900 shows a sourced interactive frequency response at each breakp
     const dialog = page.getByRole('dialog', { name: 'Sennheiser IE 900' })
     await expect(dialog).toHaveClass(/is-visible/)
     await expect(dialog.locator('[data-audio-path]')).toHaveAttribute('d', /^M/)
-    await expect(dialog.locator('[data-audio-source]')).toHaveAttribute('href', /AutoEq\/blob\/master\/results\/oratory1990/)
-    await expect(dialog.locator('[data-audio-band-index]')).toHaveCount(12)
+    const curve = await dialog.locator('[data-audio-path]').getAttribute('d')
+    expect(Number(curve?.match(/L([\d.]+) [\d.]+$/)?.[1])).toBeGreaterThan(698)
+    await expect(dialog.locator('.audio-frequency__unit')).toHaveText('relative dB · 20 Hz–20 kHz')
+    await expect(dialog.locator('[data-audio-band-index]')).toHaveCount(14)
+    await expect(dialog.locator('.audio-frequency__grid--vertical text').last()).toHaveText('20k')
+    await expect(dialog.locator('.audio-frequency__instruction, .audio-frequency__method, [data-audio-source]')).toHaveCount(0)
     await expect(dialog.locator('[data-audio-band-title]')).toHaveText('Sub-bass')
 
     await dialog.locator('svg [data-audio-band-index="4"]').click()
@@ -153,6 +157,9 @@ test('Audio IE 900 shows a sourced interactive frequency response at each breakp
     await dialog.getByRole('button', { name: 'Treble', exact: true }).click()
     await expect(dialog.locator('[data-audio-band-title]')).toHaveText('Treble')
     await expect(dialog.locator('[data-audio-band-description]')).toContainText('5–10 kHz')
+    await dialog.getByRole('button', { name: 'Air', exact: true }).click()
+    await expect(dialog.locator('[data-audio-band-range]')).toHaveText('10,000–20,000 Hz')
+    await expect(dialog.locator('[data-audio-band-description]')).toContainText('measurement setup')
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width)
 
     await dialog.getByRole('button', { name: 'Close quick review' }).click()

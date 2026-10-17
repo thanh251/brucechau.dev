@@ -16,7 +16,9 @@ const ie900FrequencyResponse = {
     [1471, 3.57], [1725, 4.16], [2023, 4.05], [2372, 3.32], [2782, 2.13],
     [3262, 0.95], [3825, 0.49], [4485, 1.31], [5260, 4.01], [5696, 4.09],
     [6167, 3.24], [6679, 4.60], [7232, 4.02], [7831, 3.22], [8480, 2.82],
-    [9183, 2.29], [9944, 1.75], [10000, 1.70],
+    [9183, 2.29], [9944, 1.75], [10768, 0.69], [11660, -0.61],
+    [12626, -2.12], [13672, -3.83], [14805, -5.74], [16032, -7.85],
+    [17360, -10.16], [18799, -12.67], [19955.54, -14.69],
   ],
   impressions: {
     subBass: 'The measured level is strongest below 60 Hz. A good seal should give deep rumble and weight to electronic bass and low drums; a loose tip can erase much of it.',
@@ -25,6 +27,7 @@ const ie900FrequencyResponse = {
     upperMids: 'Energy rises early around 1.5–2 kHz, then begins to fall. Vocals have some body, but their clarity can feel less forward than on a more conventional upper-mid tuning.',
     presence: 'The dip around 3–4 kHz softens bite and vocal projection. It may feel smooth, though higher voices and guitars can sit farther back in the mix.',
     treble: 'The 5–10 kHz region rises again, adding crisp edges and sparkle. This area varies strongly with ear tips and insertion depth, so the graph is a guide rather than a promise.',
+    air: 'The published curve falls from 10 kHz toward 20 kHz. Treat this region cautiously: IEM fit, insertion depth, and measurement setup can change the result substantially, so it cannot reliably predict how much “air” you will hear.',
   },
 } satisfies AudioFrequencyResponse
 

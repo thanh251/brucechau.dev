@@ -5,6 +5,7 @@ export const audioFrequencyBands = [
   { key: 'upperMids', label: 'Upper mids', from: 1000, to: 2500 },
   { key: 'presence', label: 'Presence', from: 2500, to: 5000 },
   { key: 'treble', label: 'Treble', from: 5000, to: 10000 },
+  { key: 'air', label: 'Air', from: 10000, to: 20000 },
 ] as const
 
 export type AudioBandKey = (typeof audioFrequencyBands)[number]['key']
@@ -18,11 +19,11 @@ export interface AudioFrequencyResponse {
   impressions: Record<AudioBandKey, string>
 }
 
-export const frequencyX = (hz: number) => 48 + (Math.log10(hz / 20) / Math.log10(10000 / 20)) * 652
-export const frequencyY = (db: number) => 20 + ((12 - db) / 26) * 166
+export const frequencyX = (hz: number) => 48 + (Math.log10(hz / 20) / Math.log10(20000 / 20)) * 652
+export const frequencyY = (db: number) => 20 + ((12 - db) / 28) * 166
 
 export const frequencyPath = (points: AudioFrequencyResponse['points']) =>
   points
-    .filter(([hz]) => hz >= 20 && hz <= 10000)
+    .filter(([hz]) => hz >= 20 && hz <= 20000)
     .map(([hz, db], index) => `${index === 0 ? 'M' : 'L'}${frequencyX(hz).toFixed(1)} ${frequencyY(db).toFixed(1)}`)
     .join(' ')
